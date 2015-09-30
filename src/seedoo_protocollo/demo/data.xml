@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<!-- This file is part of Seedoo.  The COPYRIGHT file at the top level of
+this module contains the full copyright notices and license terms. -->
+<openerp>
+    <data>
+
+        <record model="res.users" id="protocollo_user">
+            <field name="name">Protocollo user</field>
+            <field name="login">protocollo_user</field>
+            <field name="email">protocollo_user@example.com</field>
+            <field name="groups_id" eval="[
+                (6, 0,
+                    [
+                        ref('group_protocollo_user'),
+                        ref('base.group_pec')
+                    ]
+                )]"/>
+        </record>
+
+        <record model="res.users" id="protocollo_alias">
+            <field name="name">Protocollo alias</field>
+            <field name="login">info</field>
+            <field name="email"></field>
+            <field name="groups_id" eval="[
+                (6, 0,
+                    [
+                        ref('group_protocollo_user'),
+                        ref('base.group_pec')
+                    ]
+                )]"/>
+        </record>
+
+        <record model="hr.employee" id="hr_protocollo_user">
+            <field name="name">Protocollo user</field>
+            <field name="user_id"  ref="protocollo_user" />
+        </record>
+
+        <record model="res.users" id="protocollo_manager">
+            <field name="name">Protocollo manager</field>
+            <field name="login">protocollo_manager</field>
+            <field name="groups_id" eval="[
+                (6, 0,
+                    [
+                        ref('group_protocollo_manager'),
+                        ref('base.group_hr_manager'),
+                        ref('base.group_pec')
+                    ]
+                )]"/>
+        </record>
+        <record model="hr.employee" id="hr_protocollo_manager">
+            <field name="name">Protocollo manager</field>
+            <field name="user_id"  ref="protocollo_manager" />
+        </record>
+
+        <record model="res.users" id="protocollo_reserved_manager">
+            <field name="name">Protocollo reserved manager</field>
+            <field name="login">protocollo_reserved_manager</field>
+            <field name="groups_id" eval="[
+                (6, 0,
+                    [
+                        ref('group_protocollo_reserved_manager'),
+                        ref('base.group_pec')
+                    ]
+                )]"/>
+        </record>
+        <record model="hr.employee" id="hr_protocollo_reserved_manager">
+            <field name="name">Protocollo reserved manager</field>
+            <field name="user_id"  ref="protocollo_reserved_manager" />
+        </record>
+
+        <record model="hr.department" id="generic_dept">
+            <field name="name">Generic Protocollo Dept</field>
+            <field name="manager_id"  ref="hr_protocollo_manager" />
+            <field name="parent_id"  ref="protocollo_dept_root" />
+            <field name="assignable">True</field>
+        </record>
+        
+         <record model="hr.department.collaborator" id="generic_dept_coll1">
+            <field name="name"  ref="protocollo_user" />
+            <field name="department_id" ref="generic_dept"/>
+            <field name="to_notify" eval="True" />
+        </record>       
+
+        <record model="fetchmail.server" id="l10n_it_pec_messages.imap_pec_server">
+            <field name="user_ids" eval="[
+                (6, 0,
+                    [
+                        ref('protocollo_user'),
+                        ref('protocollo_manager'),
+                        ref('protocollo_reserved_manager'),
+                    ]
+                )]"/>
+        </record>
+
+        <record model="ir.mail_server" id="l10n_it_pec_messages.smtp_pec_server">
+            <field name="smtp_user">test@local.pec.it</field>
+        </record>
+
+        <record id="protocollo_registry_default" model="protocollo.registry">
+            <field name="allowed_users" eval="[
+                (6, 0,
+                    [
+                        ref('protocollo_user'),
+                        ref('protocollo_manager'),
+                        ref('protocollo_reserved_manager'),
+                    ]
+                )]"/>
+        </record>
+
+        <record model="ir.config_parameter" id="itext_param_path">
+            <field name="key">itext.location</field>
+            <field name="value">/opt/signature</field>
+        </record>
+
+        <record model="ir.config_parameter" id="param_path">
+            <field name="key">ir_attachment.location</field>
+            <field name="value">file:///tmp</field>
+        </record>
+        
+        <record model="protocollo.journal" id="prev_journal">
+            <field name="name" eval="(DateTime.today() - timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+            <field name="date" eval="(DateTime.today() - timedelta(days=1)).strftime('%Y-%m-%d')" />
+            <field name="state">closed</field>
+        </record>   
+    </data>
+</openerp>

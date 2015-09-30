@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is part of Seedoo.  The COPYRIGHT file at the top level of
+this module contains the full copyright notices and license terms. -->
+<openerp>
+    <data>
+
+        <menuitem name="Protocollo" id="menu_root_protocollo" sequence="110" groups="group_protocollo_simple_user,group_protocollo_user,group_protocollo_manager"/>
+        <menuitem name="Configurazioni" parent="menu_root_protocollo" id="protocollo_configuration" sequence="30" groups="group_protocollo_manager"/>
+
+    <!-- Typology -->
+
+        <record model='ir.ui.view' id='protocollo_typology_form'>
+            <field name="name">protocollo.typology.form</field>
+            <field name="model">protocollo.typology</field>
+            <field name="arch" type="xml">
+                <form string="Tipologia">
+                    <field name="name" />
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_typology_tree'>
+            <field name="name">protocollo.typology.tree</field>
+            <field name="model">protocollo.typology</field>
+            <field name="arch" type="xml">
+                <tree string="Tipologie">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_typology_search'>
+            <field name="name">protocollo.typology.search</field>
+            <field name="model">protocollo.typology</field>
+            <field name="arch" type="xml">
+                <search string="Tipologie" >
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_typology_act'>
+            <field name="name">Tipologie</field>
+            <field name="res_model">protocollo.typology</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="protocollo_typology_act" parent="protocollo_configuration" id="protocollo_typology_menu" groups="group_protocollo_manager"/>
+
+    <!-- Classification -->
+
+        <record model='ir.ui.view' id='protocollo_classification_form'>
+            <field name="name">protocollo.classification.form</field>
+            <field name="model">protocollo.classification</field>
+            <field name="arch" type="xml">
+                <form string="Titolario">
+                    <field name="name" />
+                    <field name="parent_id" />
+                    <field name="description" colspan="4"/>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_classification_tree'>
+            <field name="name">protocollo.classification.tree</field>
+            <field name="model">protocollo.classification</field>
+            <field name="field_parent">child_ids</field>
+        	<field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <tree string="Titolario">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_classification_tree2'>
+            <field name="name">protocollo.classification.tree</field>
+            <field name="model">protocollo.classification</field>
+        	<field name="priority" eval="10"/>
+            <field name="arch" type="xml">
+                <tree string="Titolario">
+                    <field name="name" />
+                    <field name="parent_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_classification_search'>
+            <field name="name">protocollo.classification.search</field>
+            <field name="model">protocollo.classification</field>
+            <field name="arch" type="xml">
+                <search string="Titolario" >
+                    <field name="name"  />
+                    <field name="parent_id" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_classification_act'>
+            <field name="name">Naviga Titolario</field>
+            <field name="res_model">protocollo.classification</field>
+            <field name="view_type">tree</field>
+            <field name="view_id" ref="protocollo_classification_tree"/>
+        	<field name="domain">[('parent_id','=',False)]</field>
+        </record>
+
+        <menuitem action="protocollo_classification_act" parent="protocollo_configuration" id="protocollo_classification_menu" groups="group_protocollo_manager"/>
+		
+        <record model='ir.actions.act_window' id='protocollo_classification_def_act'>
+            <field name="name">Titolario</field>
+            <field name="res_model">protocollo.classification</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="protocollo_classification_def_act_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="protocollo_classification_tree2"/>
+            <field name="act_window_id" ref="protocollo_classification_def_act"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="protocollo_classification_def_act_form">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="protocollo_classification_form"/>
+            <field name="act_window_id" ref="protocollo_classification_def_act"/>
+        </record>
+
+
+
+
+    <!-- Registry -->
+
+        <record model='ir.ui.view' id='protocollo_registry_form'>
+            <field name="name">protocollo.registry.form</field>
+            <field name="model">protocollo.registry</field>
+            <field name="arch" type="xml">
+                <form string="Registro">
+                    <field name="name" />
+                    <field name="code" />
+                    <field name="sequence" />
+                    <field name="company_id" />
+                    <field name="office_ids" colspan="4" domain="[
+                                  ('parent_id','child_of',[%(protocollo_dept_root)d])] "/>
+                    <field name="priority" />
+                    <field name="allowed_users" />
+                    <newline/>
+                    <field name="description" colspan="4"/>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_registry_tree'>
+            <field name="name">protocollo.registry.tree</field>
+            <field name="model">protocollo.registry</field>
+            <field name="arch" type="xml">
+                <tree string="Registri">
+                    <field name="name" />
+                    <field name="code" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_registry_search'>
+            <field name="name">protocollo.registry.search</field>
+            <field name="model">protocollo.registry</field>
+            <field name="arch" type="xml">
+                <search string="Registri" >
+                    <field name="name" />
+                    <field name="code" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_registry_act'>
+            <field name="name">Registri</field>
+            <field name="res_model">protocollo.registry</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="protocollo_registry_act" parent="protocollo_configuration" id="protocollo_registry_menu" groups="group_protocollo_manager"/>
+
+    <!-- Dossier -->
+
+        <record model='ir.ui.view' id='protocollo_dossier_form'>
+            <field name="name">protocollo.dossier.form</field>
+            <field name="model">protocollo.dossier</field>
+            <field name="arch" type="xml">
+                <form string="Fascicolo">
+                    <field name="name" />
+                    <field name="office_id" />
+                    <field name="classification_id" />
+                    <field name="year" />
+                    <field name="user_id" />
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_dossier_tree'>
+            <field name="name">protocollo.dossier.tree</field>
+            <field name="model">protocollo.dossier</field>
+            <field name="arch" type="xml">
+                <tree string="Fascicolo" version="7.0">
+                    <field name="name" />
+                    <field name="classification_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_dossier_search'>
+            <field name="name">protocollo.dossier.search</field>
+            <field name="model">protocollo.dossier</field>
+            <field name="arch" type="xml">
+                <search string="Fascicolo" >
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_dossier_act'>
+            <field name="name">Fascicolo</field>
+            <field name="res_model">protocollo.dossier</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="protocollo_dossier_act" parent="protocollo_configuration" id="protocollo_dossier_menu" groups="group_protocollo_manager"/>
+
+
+        <!-- Sender / Receiver -->
+
+        <record model='ir.ui.view' id='protocollo_sender_receiver_form'>
+            <field name="name">protocollo.sender_receiver.form</field>
+            <field name="model">protocollo.sender_receiver</field>
+            <field name="arch" type="xml">
+                <form string="Mittenti/Destinatari">
+                    <field name="save_partner" attrs="{'readonly': ['|',('partner_id','!=',False),('partner_id','is not',None)]}"/>
+                    <field name="type" />
+                    <field name="partner_id" />
+                    <field name="name" />
+                    <field name="street" />
+                    <field name="zip" />
+                    <field name="city" />
+                    <field name="country_id" />
+                    <field name="pec_mail" />
+                    <field name="email" />
+                    <field name="phone" />
+                    <field name="fax" />
+                    <field name="mobile" />
+                    <field name="notes" />
+                    <field name="send_type" />
+                    <field name="send_date" />
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_sender_receiver_tree'>
+            <field name="name">protocollo.sender_receiver.tree</field>
+            <field name="model">protocollo.sender_receiver</field>
+            <field name="arch" type="xml">
+                <tree string="Mittenti/Destinatari" editable="bottom" >
+                    <field name="save_partner" attrs="{'readonly': ['|',('partner_id','!=',False),('partner_id','is not',None)]}"/>
+                    <field name="type" />
+                    <field name="partner_id" on_change="on_change_partner(partner_id)" attrs="{'readonly': [('save_partner','=',True)]}"/>
+                    <field name="name" />
+                    <field name="street" />
+                    <field name="zip" />
+                    <field name="city" />
+                    <field name="country_id" />
+                    <field name="pec_mail" />
+                    <field name="email" />
+                    <field name="phone" />
+                    <field name="protocol_state" invisible="1" />
+                </tree>
+            </field>
+        </record>
+
+ <!-- Protocollo -->
+
+        <record model='ir.ui.view' id='protocollo_protocollo_form'>
+            <field name="name">protocollo.protocollo.form</field>
+            <field name="model">protocollo.protocollo</field>
+            <field name="arch" type="xml">
+                <form string="Protocollo" version="7.0">
+                   <header>
+                    	<div>
+		                   	<button name="register" states="draft" string="Registra Protocollo"/>
+		                    <button name="sent_pec" string="Invio Pec Protocollo" attrs="{'invisible':['|','|',('state','!=','registered'),('type','!=','out'),('pec','!=',True)]}"/>
+		                    <button name="sent" string="Invio Protocollo" attrs="{'invisible':['|','|',('state','!=','registered'),('type','!=','out'),('pec','!=',False)]}"/>
+		                    <button name="%(protocollo_cancel_action)d" type='action' states="registered,notified,sent,waiting,error" string="Annulla Protocollo"/>
+		                    <button name="%(protocollo_modify_action)d" type='action' string='Modifica Protocollo' states='registered' groups="seedoo_protocollo.group_protocollo_manager"/>
+		                    <button name="%(protocollo_modify_pec_action)d" type='action' string='Modifica Mail e Reinvio' attrs="{'invisible':['|',('pec','=',False),('state','not in',('registered','waiting','error'))]}" groups="seedoo_protocollo.group_protocollo_manager"/>
+	                    </div>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,registered" statusbar_colors='{"draft":"blue","notified":"red"}'/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" class="oe_inline"/>
+                            </h1>
+                            <label for="registration_date" class="oe_edit_only"/>
+                            <h2>
+                                <field name="registration_date" />
+                            </h2>
+                            <label for="registry" class="oe_edit_only"/>
+                            <h2>
+                                <field name="registry" />
+                            </h2>
+                            <label for="type" class="oe_edit_only"/>
+                            <h2>
+                            <field name="type"/>
+                            </h2>
+                        </div>
+                        <group col="2" colspan="2" string="Informazioni Emergenza" attrs="{'invisible':[('emergency_active','=', False)]}">
+                        <field name="emergency_active" invisible="1"/>
+                        <field name="registration_type"/>
+                        </group>
+                        <group col="4" string="Dati Emergenza" attrs="{'invisible':[('registration_type','=','normal')]}">
+                            <field name="emergency_protocol" attrs="{'required':[('registration_type','=','emergency')]}"/>
+                            <field name="emergency_receiving_date" attrs="{'required':[('registration_type','=','emergency')]}" on_change="on_change_emergency_receiving_date(emergency_receiving_date)" />
+                        </group>
+                        <group col="4" string="Informazioni Generali">
+                        <group col="4" >
+                                <field name="user_id" readonly="1"/>
+                        </group>
+                        <newline/>
+                        <group col="2" >
+                                <field name="subject" />
+                                <newline/>
+                                <field name="sender_protocol" attrs="{'invisible':[('type','!=','in')]}"/>
+                        </group>
+                        <group col="2" >
+                                <field name="typology" on_change="on_change_typology(typology)" colspan="2"/>
+                                <newline/>
+                                <field name="creation_date"/>
+                                <newline/>
+                                <field name="receiving_date"/>
+                        </group>
+                        <newline/>
+                        </group>
+                        <group col="4" >
+                                <field name="pec" invisible="1" />
+                                <field name="body" attrs="{'invisible':[('pec','!=',True)],'readonly':['|',('type','=','in'),('state','!=','draft')]}" colspan="4"/>
+                        </group>
+                        <group col="4" >
+                            <group col="2" >
+                            <field name="doc_id" attrs="{'invisible':[('state','=','draft'),('pec','!=',True)]}"/>
+                            <field name="datas_fname" invisible="1"/>
+                            <field name="datas" filename="datas_fname" nolabel="1" on_change="on_change_datas(datas)" attrs="{'invisible':['|',('reserved','=',True),('state','!=','draft')]}" />
+                            <newline/>
+                            <field name="mimetype" invisible="1"/>
+                            <field name="preview" nolabel="1" attrs="{'invisible':['|',('reserved','=',True),('mimetype','!=','application/pdf')], 'readonly':True}" widget="pdfviewer" options="{'width': '600', 'height': '700'}" />
+                            </group>
+                            <group col="2" >
+                            <field name="reserved"/>
+                            </group>
+
+                        </group>
+                        <separator string="Mittenti" attrs="{'invisible':[('type','!=','in')]}"/>
+                        <separator string="Destinatari" attrs="{'invisible':[('type','!=','out')]}"/>
+                        <group col="4" colspan="4">
+                            <field name="sender_receivers" nolabel="1" >
+                            </field>
+                        </group>
+                        <notebook>
+                            <page string="Classificazioni">
+                              <group col="4">
+                                <field name="user_id" invisible="1"/>
+                                <label for="classification" />
+                                <label for="dossier" />
+                                <field name="classification" nolabel="1" />
+                                <field name="dossier" nolabel="1"/>
+                              </group>
+                            </page>
+                            <page string="Assegnatari">
+                                <field name="assigne" domain="[('parent_id','child_of',[%(protocollo_dept_root)d]),('assignable','=',True)]"/>
+                            	<newline/>
+		                    	<label for="assigne_cc"  attrs="{'invisible':['|', ('pec','!=',True), ('type','=','in')]}"/>
+                            	<field name="assigne_cc" attrs="{'invisible':['|', ('pec','!=',True), ('type','=','in')]}" />
+	                    		<newline/>
+                                <field name="assigne_users" />
+                            </page>
+                            <page string="Info PEC" attrs="{'invisible':[('pec','!=',True)]}">
+                                <label for="mail_pec_ref" />
+                                <field name="mail_pec_ref" context="{'pec_messages': True}"/>
+                                <newline/>
+		                    	<label for="pec_notifications_ids" attrs="{'invisible':['|', ('pec','!=',True), ('type','=','in')]}" />
+	                    		<field name="pec_notifications_ids" context="{'pec_messages': True}" attrs="{'invisible':['|', ('pec','!=',True), ('type','=','in')]}"/>	                    		
+                            </page>
+                            <page string="Storico Modifiche">
+                                <field name="history_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="type" />
+                                        <field name="user_id" />
+                                    </tree>
+                                    <form>
+                                        <field name="name"/>
+                                        <field name="user_id"/>
+                                        <field name="type"/>
+                                        <field name="description"/>
+                                        <field name="before" attrs="{'invisible':[('type','=', 'cancel')]}"/>
+                                        <field name="after" attrs="{'invisible':[('type','=', 'cancel')]}"/>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                        <label for="notes" />
+                        <field name="notes" colspan="4"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_protocollo_tree'>
+            <field name="name">protocollo.protocollo.tree</field>
+            <field name="model">protocollo.protocollo</field>
+            <field name="arch" type="xml">
+                <tree string="Protocolli" version="7.0" colors="blue:state=='registered';green:state=='notified';green:state=='sent';orange:state=='waiting';red:state=='canceled';red:state=='error'">
+                    <field name="type"/>
+                    <field name="complete_name" />
+                    <field name="name" invisible="1"/>
+                    <field name="assigne" invisible="1"/>
+                    <field name="sender_receivers" invisible="1"/>
+                    <field name="registration_date_from" invisible="1"/>
+                    <field name="registration_date_to" invisible="1"/>
+                    <field name="registration_date" />
+                    <field name="sender_receivers_summary" />
+                    <field name="subject" />
+                    <field name="typology"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="protocollo_protocollo_search">
+            <field name="name">protocollo.protocollo.search</field>
+            <field name="model">protocollo.protocollo</field>
+            <field name="arch" type="xml">
+                <search string="Protocolli">
+                    <field name="type"/>
+                    <field name="name" filter_domain="['|', ('name','ilike',self), ('registration_date','ilike',self)]" string="protocollo"/>
+                    <field name="user_id"/>
+                    <field name="assigne"/>
+                    <field name="sender_receivers" />
+                    <field name="subject" />
+                    <field name="registration_date_from" filter_domain="[('registration_date','&gt;=',self)]"/>
+                    <field name="registration_date_to" filter_domain="[('registration_date','&lt;=',self)]"/>
+                    <field name="classification"/>
+                    <field name="typology"/>
+                    <field name="dossier"/>
+                    <field name="state" />
+               </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_protocollo_in_act'>
+            <field name="name">Protocollazioni in Ingresso</field>
+            <field name="res_model">protocollo.protocollo</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="protocollo_protocollo_tree"/>
+            <field name="search_view_id" ref="protocollo_protocollo_search"/>
+            <field name="domain">[('type','=','in'),('state','!=','draft')]</field>
+            <field name="context">{'default_type':'in'}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo protocollo in ingresso
+              </p><p>
+                Si possono creare protocollazioni in ingresso e uscita ed inserire gli assegnatari della pratica
+            </p><p>
+                Il sistema notifica sull'andamento del protocollo
+              </p>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_protocollo_in_draft_act'>
+            <field name="name">Protocollazioni in Ingresso Da Registrare</field>
+            <field name="res_model">protocollo.protocollo</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="protocollo_protocollo_tree"/>
+            <field name="search_view_id" ref="protocollo_protocollo_search"/>
+            <field name="domain">[('type','=','in'),('state','=','draft')]</field>
+            <field name="context">{'default_type':'in'}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo protocollo in ingresso
+              </p><p>
+                Si possono creare protocollazioni in ingresso e uscita ed inserire gli assegnatari della pratica
+            </p><p>
+                Il sistema notifica sull'andamento del protocollo
+              </p>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_protocollo_out_act'>
+            <field name="name">Protocollazioni in Uscita</field>
+            <field name="res_model">protocollo.protocollo</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="protocollo_protocollo_tree"/>
+            <field name="search_view_id" ref="protocollo_protocollo_search"/>
+            <field name="domain">[('type','=','out'),('state','!=','draft')]</field>
+            <field name="context">{'default_type':'out'}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo protocollo in uscita
+              </p><p>
+                Si possono creare protocollazioni in ingresso e uscita ed inserire gli assegnatari della pratica
+            </p><p>
+                Il sistema notifica sull'andamento del protocollo
+              </p>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_protocollo_out_draft_act'>
+            <field name="name">Protocollazioni in Uscita Da Registrare</field>
+            <field name="res_model">protocollo.protocollo</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="protocollo_protocollo_tree"/>
+            <field name="search_view_id" ref="protocollo_protocollo_search"/>
+            <field name="domain">[('type','=','out'),('state','=','draft')]</field>
+            <field name="context">{'default_type':'out'}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo protocollo in uscita
+              </p><p>
+                Si possono creare protocollazioni in ingresso e uscita ed inserire gli assegnatari della pratica
+            </p><p>
+                Il sistema notifica sull'andamento del protocollo
+              </p>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_protocollo_notified_act'>
+            <field name="name">Protocollazioni Registrate</field>
+            <field name="res_model">protocollo.protocollo</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="protocollo_protocollo_tree"/>
+            <field name="search_view_id" ref="protocollo_protocollo_search"/>
+            <field name="domain">[('state','in',('registered','notified','sent','waiting','error')),('is_visible','=',True)]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo protocollo in uscita
+              </p><p>
+                Si possono creare protocollazioni in ingresso e uscita ed inserire gli assegnatari della pratica
+            </p><p>
+                Il sistema notifica sull'andamento del protocollo
+              </p>
+            </field>
+        </record>
+
+        <menuitem name="Protocollo" parent="menu_root_protocollo" id="protocollo_protocollo_main" sequence="2" groups="group_protocollo_simple_user,group_protocollo_user,group_protocollo_manager"/>
+        <menuitem action="protocollo_protocollo_in_act" parent="protocollo_protocollo_main" id="protocollo_protocollo_in_menu" sequence="10" groups="group_protocollo_user,group_protocollo_manager"/>
+        <menuitem action="protocollo_protocollo_in_draft_act" parent="protocollo_protocollo_in_menu" id="protocollo_protocollo_in_draft_menu" sequence="10" groups="group_protocollo_user,group_protocollo_manager"/>
+        <menuitem action="protocollo_protocollo_out_act" parent="protocollo_protocollo_main" id="protocollo_protocollo_out_menu" sequence="10" groups="group_protocollo_user,group_protocollo_manager"/>
+        <menuitem action="protocollo_protocollo_out_draft_act" parent="protocollo_protocollo_out_menu" id="protocollo_protocollo_out_draft_menu" sequence="10" groups="group_protocollo_user,group_protocollo_manager"/>
+        <menuitem action="protocollo_protocollo_notified_act" parent="protocollo_protocollo_main" id="protocollo_protocollo_notified_menu" sequence="10" groups="group_protocollo_simple_user,group_protocollo_user,group_protocollo_manager"/>
+
+	<!-- Browse Classification -->
+	    <record model="ir.actions.act_window" id="action_protocollo_protocollo_classification">
+	        <field name="type">ir.actions.act_window</field>
+	        <field name="res_model">protocollo.protocollo</field>
+	        <field name="name">Protocolli da Titolario</field>
+	        <field name="view_type">form</field>
+	        <field name="domain">[('classification','in',[active_id])]</field>
+	    </record>
+	
+	    <record model="ir.values" id="ir_action_protocollo_protocollo_classification_form">
+	        <field name="key2" eval="'tree_but_open'"/>
+	        <field name="model" eval="'protocollo.classification'"/>
+	        <field name="name">Naviga Titolario</field>
+	        <field name="value" eval="'ir.actions.act_window,%d'%action_protocollo_protocollo_classification"/>
+	    </record>
+
+        <menuitem action="protocollo_classification_act" parent="protocollo_configuration" id="protocollo_classification_menu" groups="group_protocollo_manager"/>
+		<menuitem action="protocollo_classification_def_act" parent="protocollo_classification_menu" id="protocollo_classification_def_menu" groups="group_protocollo_manager"/>
+       
+
+
+    <!-- Protocol Journal -->
+
+        <record model='ir.ui.view' id='protocollo_journal_form'>
+            <field name="name">protocollo.journal.form</field>
+            <field name="model">protocollo.journal</field>
+            <field name="arch" type="xml">
+                <form string="Registro Giornaliero">
+                    <field name="name" />
+                    <field name="user_id" />
+                    <field name="protocol_ids" colspan="4"/>
+                    <field name="state" />
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_journal_tree'>
+            <field name="name">protocollo.journal.tree</field>
+            <field name="model">protocollo.journal</field>
+            <field name="arch" type="xml">
+                <tree string="Registro Giornaliero" version="7.0">
+                    <field name="name" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_journal_search'>
+            <field name="name">protocollo.journal.search</field>
+            <field name="model">protocollo.journal</field>
+            <field name="arch" type="xml">
+                <search string="Registro Giornaliero" >
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_journal_act'>
+            <field name="name">Registro Giornaliero</field>
+            <field name="res_model">protocollo.journal</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="protocollo_journal_act" parent="protocollo_configuration" id="protocollo_journal_menu" groups="group_protocollo_manager"/>
+
+    <!-- Protocol Emergency -->
+
+        <record model='ir.ui.view' id='protocollo_emergency_registry_form'>
+            <field name="name">protocollo.emergency.registry.form</field>
+            <field name="model">protocollo.emergency.registry</field>
+            <field name="arch" type="xml">
+                <form string="Registro Emergenza">
+                    <field name="name" />
+                    <field name="registry" />
+                    <field name="user_id" />
+                    <newline/>
+                    <field name="date_start" />
+                    <field name="date_end" />
+                    <field name="emergency_ids" >
+                        <tree>
+                            <field name="name"/>
+                            <field name="emergency_number"/>
+                            <field name="protocol_id" />
+                        </tree>
+                        <form>
+                            <field name="name"/>
+                            <field name="emergency_number"/>
+                            <field name="protocol_id" />
+                        </form>
+                    </field>
+                    <field name="state" />
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_emergency_registry_tree'>
+            <field name="name">protocollo.emergency.registry.tree</field>
+            <field name="model">protocollo.emergency.registry</field>
+            <field name="arch" type="xml">
+                <tree string="Registro Emergenza" version="7.0">
+                    <field name="name" />
+                    <field name="registry" />
+                    <field name="date_start" />
+                    <field name="date_end" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_emergency_registry_search'>
+            <field name="name">protocollo.emergency.registry.search</field>
+            <field name="model">protocollo.emergency.registry</field>
+            <field name="arch" type="xml">
+                <search string="Registro Emergenza" >
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_emergency_registry_act'>
+            <field name="name">Registro Emergenza</field>
+            <field name="res_model">protocollo.emergency.registry</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="protocollo_emergency_registry_act" parent="protocollo_configuration" id="protocollo_emergency_registry_menu" groups="group_protocollo_manager"/>
+
+    </data>
+</openerp>
+

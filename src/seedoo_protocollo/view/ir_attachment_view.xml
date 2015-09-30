@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is part of Seedoo.  The COPYRIGHT file at the top level of
+this module contains the full copyright notices and license terms. -->
+<openerp>
+<data>
+
+    <record model="ir.ui.view" id="view_document_file_protocol_form">
+        <field name="name">ir.attachment.protocol</field>
+        <field name="model">ir.attachment</field>
+        <field name="priority" eval="1"/>
+        <field name="inherit_id" ref="document.view_document_file_form"/>
+        <field name="arch" type="xml">
+        <field name="index_content" position="replace" >
+        	<field name="reserved" invisible="1"/>
+        	<field name="index_content" nolabel="1" attrs="{'invisible':[('reserved','=',True)]}"/>
+        </field>
+        </field>
+    </record>
+</data>
+</openerp>

@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<!-- This file is part of Seedoo.  The COPYRIGHT file at the top level of
+this module contains the full copyright notices and license terms. -->
+<openerp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="module_protocollo_category">
+            <field name="name">Protocolli</field>
+            <field name="sequence">20</field>
+        </record>
+        <!-- Utente generico: può vedere i protocolli a lui assegnati -->
+        <record id="group_protocollo_simple_user" model="res.groups">
+            <field name="name">Simple User protocollo</field>
+            <field name="category_id" ref="module_protocollo_category"/>
+        	<field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('base.group_document_user'))]"/>
+        </record>
+        <!-- Utente protocollatore: può protocollare -->
+        <record id="group_protocollo_user" model="res.groups">
+            <field name="name">User protocollo</field>
+            <field name="category_id" ref="module_protocollo_category"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('base.group_document_user')), (4, ref('base.group_pec'))]"/>
+        </record>
+        <!-- Utente manager: può protocollare, può modificare un protocollo registrato, reinviare PEC fallite. In generale può inserire le configurazioni del protcollo -->
+        <record id="group_protocollo_manager" model="res.groups">
+            <field name="name">Manager protocollo</field>
+            <field name="implied_ids" eval="[(4, ref('group_protocollo_user'))]"/>
+            <field name="category_id" ref="module_protocollo_category"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('base.group_document_user')), (4, ref('base.group_pec'))]"/>
+        </record>
+        <!-- da verificare se serve ancora -->
+        <record id="group_protocollo_uo_manager" model="res.groups">
+            <field name="name">Manager UO protocollo</field>
+            <field name="implied_ids" eval="[(4, ref('group_protocollo_user'))]"/>
+            <field name="category_id" ref="module_protocollo_category"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('base.group_document_user')), (4, ref('base.group_pec'))]"/>
+        </record>
+        <!-- Può vedere i dati sensibili. Quando viene creato un protocollo con dati sensibili, li può vedere solo lui -->
+        <record id="group_protocollo_reserved_manager" model="res.groups">
+            <field name="name">Manager Sensible Data protocollo</field>
+            <field name="implied_ids" eval="[(4, ref('group_protocollo_user'))]"/>
+            <field name="category_id" ref="module_protocollo_category"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('base.group_document_user'))]"/>
+        </record>
+
+    </data>
+
+</openerp>

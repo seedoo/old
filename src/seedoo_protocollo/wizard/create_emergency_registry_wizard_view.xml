@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is part of Seedoo.  The COPYRIGHT file at the top level of
+this module contains the full copyright notices and license terms. -->
+<openerp>
+    <data>
+        <!-- wizard action on protocollo.protocollo -->
+        <act_window id="protocollo_emergency_registry_action"
+            name="Registro Emergenza Protocollo"
+            src_model="protocollo.emergency.registry"
+            res_model="protocollo.emergency.registry.wizard"
+            view_type="form" view_mode="form"
+            target="new"
+            groups="seedoo_protocollo.group_protocollo_manager"/>
+            
+        <!-- wizard view -->
+        <record id="protocollo_emergency_registry_view" model="ir.ui.view">
+            <field name="name">Crea Registro Emergenza</field>
+            <field name="model">protocollo.emergency.registry.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Registro Emergenza" version="7.0">
+              		<group>
+	                    <field name="name"/>
+	                    <field name="registry"/>
+                    </group>
+              		<group>
+	                    <field name="date_start"/>
+	                    <field name="date_end"/>
+                    </group>
+	                    <field name="number"/>
+                    <separator string="Crea Registro Emergenza" />
+                    <footer>
+                        <button string="Ok" name="action_create" type="object" class="oe_highlight"/>
+                        o
+                        <button string="Abbandona" class="oe_link" special="cancel" />    
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <menuitem
+            icon="STOCK_EXECUTE"
+            name="Crea Registro Emergenza"
+            action="protocollo_emergency_registry_action"
+            id="menu_protocollo_emergency_registry_create"
+            parent="protocollo_configuration"/>
+            
+    </data>
+</openerp>

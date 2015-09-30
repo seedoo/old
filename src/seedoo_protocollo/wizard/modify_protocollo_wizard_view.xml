@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is part of Seedoo.  The COPYRIGHT file at the top level of
+this module contains the full copyright notices and license terms. -->
+<openerp>
+    <data>
+
+        <!-- wizard action on protocollo.protocollo -->
+        <act_window id="protocollo_modify_action"
+            name="Modifica Straordinaria Protocollo"
+            src_model="protocollo.protocollo"
+            res_model="protocollo.modify.wizard"
+            view_type="form" view_mode="form"
+            target="new"
+            groups="seedoo_protocollo.group_protocollo_user,seedoo_protocollo.group_protocollo_manager"/>
+
+        <!-- wizard view -->
+        <record id="protocollo_modify_view1" model="ir.ui.view">
+            <field name="name">Modifica Straordinaria Protocollo</field>
+            <field name="model">protocollo.modify.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Protocollo" version="7.0">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" class="oe_inline"/>
+                            </h1>
+                            <label for="registration_date" class="oe_edit_only"/>
+                            <h2>
+                                <field name="registration_date" />
+                            </h2>
+                            <label for="type" class="oe_edit_only"/>
+                            <h2>
+                            <field name="type"/>
+                            </h2>
+                        </div>
+                        <separator string="Causa della modifica" />
+	                    <field name="cause" colspan="4"/>
+	                    <newline />
+                        <group col="4" string="Informazioni Generali">
+                        <group col="2" >
+                            	<field name="subject" />
+                        </group>
+                        <group col="2" >
+                                <field name="typology" />
+                                <newline/>
+                                <field name="receiving_date"/>
+                        </group>
+                        </group>
+	                    <notebook>
+	                    	<page string="Classificazioni">
+	                    	  <group col="4">
+	                    		<label for="classification" />
+	                    		<label for="dossier" />
+		                    	<field name="classification" nolabel="1"/>
+		                    	<field name="dossier" nolabel="1"/>
+		                      </group>
+	                    	</page>
+	                    </notebook>
+                        <label for="notes" />
+	                    <field name="notes" colspan="4"/>
+                    </sheet>
+                    <footer>
+                        <button string="Ok" name="action_save" type="object" class="oe_highlight"/>
+                        o
+                        <button string="Abbandona" class="oe_link" special="cancel" />    
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is part of Seedoo.  The COPYRIGHT file at the top level of
+this module contains the full copyright notices and license terms. -->
+<openerp>
+    <data>
+        <!-- wizard action on protocollo.protocollo -->
+        <act_window id="create_protocollo_pec_action"
+            name="Protocolla Pec"
+            src_model="mail.message"
+            res_model="protocollo.pec.wizard"
+            view_type="form" view_mode="form"
+            target="new"
+            context="{'pec_messages': True}"
+            groups="seedoo_protocollo.group_protocollo_user"/>
+
+        <!-- wizard view -->
+        <record id="create_protocollo_wizard_view" model="ir.ui.view">
+            <field name="name">Protocolla PEC in ingresso</field>
+            <field name="model">protocollo.pec.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Protocollo PEC" version="7.0">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="subject" class="oe_edit_only"/>
+                            <h1>
+                                <field name="subject" class="oe_inline"/>
+                            </h1>
+                            <label for="receiving_date" class="oe_edit_only"/>
+                            <h2>
+                                <field name="receiving_date" />
+                            </h2>
+                        </div>
+                        <newline />
+                        <group col="4" string="Corpo della Mail">
+                        <group >
+                                <field name="body" colspan="4" />
+                        </group>
+                        </group>
+                        <separator string="Mittenti"/>
+                        <group col="4" colspan="4">
+                            <field name="sender_receivers" nolabel="1" >
+                                <tree editable="bottom">
+                                    <field name="type" />
+                                    <field name="partner_id" />
+                                    <field name="name" string="Nome Cognome/Ragione Sociale" />
+                                    <field name="street" />
+                                    <field name="zip" />
+                                    <field name="city" />
+                                    <field name="country_id" />
+                                    <field name="email" />
+                                    <field name="pec_mail" />
+                                    <field name="phone" />
+                                </tree>
+                            </field>
+                        </group>
+                        <notebook>
+	                    	<page string="Classificazioni">
+	                    	  <group col="4">
+	                    	  	<group>
+		                    		<label for="classification" />
+			                    	<field name="classification" nolabel="1"/>
+		                    	</group>
+		                    	<group>
+		                    		<label for="dossier" />
+			                    	<field name="dossier" nolabel="1"/>
+		                    	</group>
+		                      </group>
+	                    	</page>
+                        </notebook>
+                        <label for="notes" />
+                        <field name="notes" colspan="4"/>
+                    </sheet>
+                    <footer>
+                        <button string="Ok" name="action_save" type="object" class="oe_highlight"/>
+                        o
+                        <button string="Abbandona" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>
