@@ -8,6 +8,9 @@ Il software gestisce l’intero iter documentale in maniera personalizzata e int
 
 Protocollo informatico, Gestione Documentale, Analisi dei Dati, sono alcuni degli strumenti che permettono alla nuova PA di perseguire i propri obiettivi in un’ottica di performance, governance e trasparenza verso il cittadino
 
+.. image:: https://travis-ci.org/seedoo/seedoo.svg?branch=master
+    :target: https://travis-ci.org/seedoo/seedoo
+
 Installazione
 =============
 La seguente procedura è stata testata su Ubuntu Server e dovrebbe funzionare su ogni distribuzione Debian based

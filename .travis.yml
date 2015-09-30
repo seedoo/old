@@ -1,0 +1,19 @@
+language: python
+cache: pip
+
+python:
+  - "2.7"
+
+addons:
+  apt:
+    packages:
+      - poppler-utils
+
+virtualenv:
+  system_site_packages: true
+
+install: ./travis_install
+
+script: ./travis_run_tests
+
+after_success: true

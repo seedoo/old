@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "deb http://apt.anybox.fr/openerp common main" | sudo tee -a /etc/apt/sources.list
+sudo apt-key adv --keyserver hkp://subkeys.pgp.net --recv-keys 0xE38CEB07
+sudo aptitude update
+sudo aptitude install openerp-server-system-build-deps
+wget https://raw.github.com/buildout/buildout/master/bootstrap/bootstrap.py
+virtualenv sandbox
+sandbox/bin/pip install unidecode==0.04.17
+sandbox/bin/pip install python-magic==0.4.6
+sandbox/bin/pip install PyXB==1.2.4
+sandbox/bin/pip install pyPdf==1.13
+sandbox/bin/pip uninstall -y setuptools pip
+sandbox/bin/python bootstrap.py
+git config --global user.email admin@seedoo.it
+git config --global user.name seedoo
+bin/buildout
