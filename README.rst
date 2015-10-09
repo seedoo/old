@@ -49,14 +49,6 @@ Eseguire i seguenti comandi nel path dove si vuole installare seedoo e con l’u
 
 ``virtualenv sandbox``
 
-``sandbox/bin/pip install unidecode==0.04.17``
-
-``sandbox/bin/pip install python-magic==0.4.6``
-
-``sandbox/bin/pip install PyXB==1.2.4``
-
-``sandbox/bin/pip install pyPdf==1.13``
-
 ``sandbox/bin/pip uninstall setuptools pip``
 
 ``sandbox/bin/python bootstrap.py``
