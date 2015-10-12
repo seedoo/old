@@ -114,3 +114,18 @@ Creare un nuovo record con i seguenti valori
 ``Key = itext.location``
 
 ``Value = '/opt/signature'``
+
+Configurazione segnatura per i test
+-----------------------------------
+
+Creare nella home dell'utente le directory per la segnatura con il comando
+
+``mkdir -p build/seedoo/seedoo``
+
+entrare nel percorso appena creato e creare un link simbolico verso il percorso 
+di signature.sh
+
+``cd build/seedoo/seedoo``
+
+``ln -s /opt/signature/ ./extras``
+
