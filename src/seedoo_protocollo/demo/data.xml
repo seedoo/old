@@ -109,7 +109,7 @@ this module contains the full copyright notices and license terms. -->
 
         <record model="ir.config_parameter" id="itext_param_path">
             <field name="key">itext.location</field>
-            <field name="value">/home/travis/build/seedoo/seedoo/extras</field>
+            <field name="value">~/build/seedoo/seedoo/extras</field>
         </record>
 
         <record model="ir.config_parameter" id="param_path">
