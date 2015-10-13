@@ -767,7 +767,8 @@ class protocollo_protocollo(orm.Model):
         file_path = self._full_path(cr, uid, location, prot.doc_id.store_fname)
         maintain_orig = False
         strong_encryption = False
-        cmd = [signatureCmd, file_path, prot_def, prot.type]
+        cmd = [os.path.expanduser(signatureCmd),
+               file_path, prot_def, prot.type]
         try:
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
             stdoutdata, stderrdata = proc.communicate()
