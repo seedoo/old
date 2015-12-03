@@ -103,6 +103,10 @@ A questo punto è possibile accedere al sistema all’URL
 
 ``http://localhost:8069``
 
+e creare un DB usando la ``admin_passwd``.
+
+Infine, a seconda dell'esigenza, si potranno installare i moduli ``seedoo_protocollo`` e/o ``l10n_it_fatturapa_in_notifications``
+
 Configurazione segnatura
 ------------------------
 Fare il login a seedoo con l’utente admin e cliccare
