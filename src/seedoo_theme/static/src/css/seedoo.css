@@ -1,0 +1,44 @@
+
+.openerp .oe_login {
+  background-image: none;
+}
+
+.openerp .oe_login .oe_login_bottom {
+  background: #679B41;
+}
+
+.openerp .oe_login button {
+  background-color: #679B41;
+  background-image: linear-gradient(to bottom, #679B41,#366732)!important;
+}
+
+.openerp button.oe_highlight {
+  background-color: #679B41;
+  background-image: linear-gradient(to bottom, #679B41,#366732)!important;
+
+}
+
+.openerp .oe_login .oe_login_pane {
+  background: #9AC569;
+}
+
+.openerp .oe_login .oe_login_logo {
+  top: -116px;
+}
+
+.openerp .oe_topbar {
+  background-color: #679B41;
+  background-image: none;
+}
+
+.openerp .oe_topbar .oe_dropdown_menu {
+  background-color: #679B41;
+}
+
+.openerp .oe_topbar .oe_topbar_item {
+  color: white;
+}
+
+.openerp .oe_topbar .oe_dropdown_menu li a {
+  color: white;
+}
