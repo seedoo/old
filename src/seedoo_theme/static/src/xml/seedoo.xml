@@ -3,7 +3,9 @@
 <templates id="template" xml:space="preserve">
     <t t-extend="Login">
         <t t-jquery="div[class=oe_login_logo]" t-operation="replace">
-            <div class="oe_login_logo"><img src='seedoo_theme/static/src/img/logo.png'/></div>
+            <div class="oe_login_logo">
+            <a href="http://www.seedoo.it" target="_blank"><img src='seedoo_theme/static/src/img/logo.png'/></a>
+            </div>
         </t>
     </t>
 
