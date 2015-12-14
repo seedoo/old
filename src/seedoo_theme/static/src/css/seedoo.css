@@ -32,12 +32,12 @@
   background-image: none;
       font-size: 15px;
 }
-}
+
 .openerp .oe_menu{
   font-size: 15px!important;
 }
 
-}
+
 
 .openerp .oe_topbar .oe_dropdown_menu {
   background-color: #366732;
@@ -49,4 +49,8 @@
 
 .openerp .oe_topbar .oe_dropdown_menu li a {
   color: white;
+}
+
+.openerp .oe_secondary_menu_section {
+color: #366732;
 }
