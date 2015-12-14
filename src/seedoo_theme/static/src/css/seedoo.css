@@ -19,8 +19,8 @@
 }
 
 .openerp .oe_login .oe_login_pane {
-  background: #9AC569;
-  color: #000;
+  background: #366732;
+  color: #FFF;
 }
 
 .openerp .oe_login .oe_login_logo {
@@ -28,12 +28,19 @@
 }
 
 .openerp .oe_topbar {
-  background-color: #679B41;
+  background-color: #366732;
   background-image: none;
+      font-size: 15px;
+}
+}
+.openerp .oe_menu{
+  font-size: 15px!important;
+}
+
 }
 
 .openerp .oe_topbar .oe_dropdown_menu {
-  background-color: #679B41;
+  background-color: #366732;
 }
 
 .openerp .oe_topbar .oe_topbar_item {
