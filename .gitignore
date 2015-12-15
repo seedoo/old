@@ -33,12 +33,17 @@ pip-log.txt
 .pydevproject
 .settings/
 
+#Intellij
+*.iml
+.idea
+
 #buildout
 anybox.recipe.openerp
 downloads
 etc
 upgrade.*
 sandbox
+venv
 bootstrap.py
 aro
 a.r.openerp
