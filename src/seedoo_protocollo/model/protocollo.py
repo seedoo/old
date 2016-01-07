@@ -4,7 +4,7 @@
 
 from openerp import SUPERUSER_ID
 from openerp.osv import orm,  fields
-from tools.translate import _
+from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DSDT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DSDF
 import openerp.exceptions
@@ -19,6 +19,8 @@ import magic
 import datetime
 import time
 import logging
+
+from seedoo_protocollo.segnatura.segnatura_xml import SegnaturaXML
 
 _logger = logging.getLogger(__name__)
 mimetypes.init()
@@ -959,6 +961,9 @@ class protocollo_protocollo(orm.Model):
                 vals['registration_date'] = prot_date
                 now = datetime.datetime.now()
                 vals['year'] = now.year
+
+                # segnatura_xml = SegnaturaXML(prot, cr, uid)
+                # segnatura_xml.generate_segnatura_root()
                 self.write(cr, uid, [prot.id], vals)
             except Exception as e:
                 _logger.error(e)
