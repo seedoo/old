@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # This file is part of Seedoo.  The COPYRIGHT file at the top level of
 # this module contains the full copyright notices and license terms.
+from lxml import etree
 
 from openerp import SUPERUSER_ID
 from openerp.osv import orm,  fields
@@ -962,8 +963,9 @@ class protocollo_protocollo(orm.Model):
                 now = datetime.datetime.now()
                 vals['year'] = now.year
 
-                # segnatura_xml = SegnaturaXML(prot, cr, uid)
-                # segnatura_xml.generate_segnatura_root()
+                segnatura_xml = SegnaturaXML(prot, prot_number, prot_date, cr, uid)
+                xml = segnatura_xml.generate_segnatura_root()
+                print(etree.tostring(xml, pretty_print=True))
                 self.write(cr, uid, [prot.id], vals)
             except Exception as e:
                 _logger.error(e)
