@@ -64,7 +64,9 @@ Configure ir.attachment.location
             'wizard/create_journal_wizard_view.xml',
             'wizard/create_emergency_registry_wizard_view.xml',
             'workflow/protocollo_workflow.xml',
-            'data/protocollo_report.xml'],
+            'data/protocollo_report.xml',
+            'data/segnatura.dtd'
+        ],
     'demo': [
         'demo/data.xml',
         'demo/protocollo.classification.csv',

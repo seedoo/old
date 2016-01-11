@@ -57,7 +57,7 @@ class TestXmlGeneration(unittest.TestCase):
 
     def test_0_prova(self):
         print "xml generation test init"
-        dtdfile = open("../data/Segnatura.dtd", 'r')
+        dtdfile = open("../data/segnatura.dtd", 'r')
         examplefile = open("../data/esempio.xml", 'r')
         exampleXML = etree.parse(examplefile)
         dtd = etree.DTD(dtdfile)
