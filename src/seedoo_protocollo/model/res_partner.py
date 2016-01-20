@@ -6,6 +6,8 @@ from openerp.osv import orm
 from openerp import netsvc
 import logging
 
+from osv import *
+
 _logger = logging.getLogger(__name__)
 
 
@@ -14,6 +16,26 @@ class ResPartner(orm.Model):
     # inherit partner because PEC mails are not supposed to be associate to
     # generic models
     _inherit = "res.partner"
+
+
+    _columns = {
+        'juridical_type': fields.selection(
+            [
+                ('individual', 'Persona Fisica'),
+                ('legal', 'Azienda privata'),
+                ('government', 'Amministrazione pubblica')
+            ], 'Tipologia', size=32, required=False),
+
+        'ident_code': fields.char(
+            'Codice Identificativo Area',
+            size=256,
+            required=False),
+
+        'ammi_code': fields.char(
+            'Codice Amministrazione',
+            size=256,
+            required=False)
+    }
 
     def message_post(
         self, cr, uid, thread_id, body='', subject=None, type='notification',
