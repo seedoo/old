@@ -18,24 +18,24 @@ class ResPartner(orm.Model):
     _inherit = "res.partner"
 
 
-    _columns = {
-        'juridical_type': fields.selection(
-            [
-                ('individual', 'Persona Fisica'),
-                ('legal', 'Azienda privata'),
-                ('government', 'Amministrazione pubblica')
-            ], 'Tipologia', size=32, required=False),
-
-        'ident_code': fields.char(
-            'Codice Identificativo Area',
-            size=256,
-            required=False),
-
-        'ammi_code': fields.char(
-            'Codice Amministrazione',
-            size=256,
-            required=False)
-    }
+    # _columns = {
+    #     'juridical_type': fields.selection(
+    #         [
+    #             ('individual', 'Persona Fisica'),
+    #             ('legal', 'Azienda privata'),
+    #             ('government', 'Amministrazione pubblica')
+    #         ], 'Tipologia', size=32, required=False),
+    #
+    #     'ident_code': fields.char(
+    #         'Codice Identificativo Area',
+    #         size=256,
+    #         required=False),
+    #
+    #     'ammi_code': fields.char(
+    #         'Codice Amministrazione',
+    #         size=256,
+    #         required=False)
+    # }
 
     def message_post(
         self, cr, uid, thread_id, body='', subject=None, type='notification',

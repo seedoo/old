@@ -5,5 +5,5 @@
 from . import test_protocollo_zip
 
 checks = [
-    test_protocollo_zip,
+    # test_protocollo_zip,
 ]

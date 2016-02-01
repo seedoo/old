@@ -44,7 +44,8 @@ Configure ir.attachment.location
             'hr',
             'email_template',
             'report_webkit',
-            'l10n_it_pec_messages'],
+            'l10n_it_pec_messages',
+            'seedoo_base_ipa'],
     'data':
         [
             'security/protocollo_security.xml',

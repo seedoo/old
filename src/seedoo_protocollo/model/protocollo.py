@@ -83,7 +83,7 @@ class protocollo_sender_receiver(orm.Model):
                 browse(cr, uid, partner_id, context=context)
             values = {
                 # 'type': partner.is_company and 'individual' or 'legal',
-                'type': partner.juridical_type,
+                'type': partner.legal_type,
                 'ident_code': partner.ident_code,
                 'ammi_code': partner.ammi_code,
                 'name': partner.name,
@@ -934,7 +934,7 @@ class protocollo_protocollo(orm.Model):
                         'mobile': send_rec.mobile,
                         'fax': send_rec.fax,
                         'zip': send_rec.zip,
-                        'juridical_type': send_rec.type,
+                        'legal_type': send_rec.type,
                         'ident_code': send_rec.ident_code,
                         'ammi_code': send_rec.ammi_code
                     }
