@@ -92,7 +92,7 @@ class protocollo_sender_receiver(orm.Model):
                 'country_id': (
                     partner.country_id and
                     partner.country_id.id or False),
-                'email_from': partner.email,
+                'email': partner.email,
                 'phone': partner.phone,
                 'mobile': partner.mobile,
                 'pec_mail': partner.pec_mail,
@@ -928,7 +928,7 @@ class protocollo_protocollo(orm.Model):
                         'city': send_rec.city,
                         'country_id': send_rec.country_id and
                         send_rec.country_id.id or False,
-                        'email_from': send_rec.email,
+                        'email': send_rec.email,
                         'pec_mail': send_rec.pec_mail,
                         'phone': send_rec.phone,
                         'mobile': send_rec.mobile,

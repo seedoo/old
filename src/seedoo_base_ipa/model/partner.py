@@ -41,7 +41,9 @@ class ResPartner(orm.Model):
                 [
                     ('pa', 'Amministrazione Principale'),
                     ('aoo', 'Area Organizzativa Omogenea'),
-                    ('uo', 'Unità Organizzativa')], 'Tipologia amministrazione', size=32, required=False),
+                    ('uo', 'Unità Organizzativa')], 'Tipologia amministrazione', size=5, required=False),
+
+        'super_type': fields.char('super_type', size=5, required=False),
 
         'ident_code': fields.char(
                 'Codice Identificativo Area (AOO)',
@@ -59,6 +61,17 @@ class ResPartner(orm.Model):
                 required=False),
 
         'parent_pa_id': fields.many2one("res.partner", "Organizzazione di Appartenenza", required=False),
+        'parent_pa_type': fields.related('parent_pa_id', 'pa_type', type='selection', readonly=True, string='Tipologia amministrazione padre'),
         'child_pa_ids': fields.one2many("res.partner", "parent_pa_id", "Strutture Afferenti", required=False)
 
     }
+
+    def on_change_pa_type(self, cr, uid, ids, pa_type):
+        res = {'value': {}}
+
+        if pa_type=='aoo':
+            res['value']['super_type'] = 'pa'
+        elif pa_type=='uo':
+            res['value']['super_type'] = 'aoo'
+
+        return res
