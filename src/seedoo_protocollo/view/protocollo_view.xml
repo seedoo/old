@@ -439,6 +439,10 @@ this module contains the full copyright notices and license terms. -->
                                     </form>
                                 </field>
                             </page>
+                            <page string="Segnatura XML">
+                                <label for="xml_data" />
+                                <field name="xml_data" colspan="4"/>
+                            </page>
                         </notebook>
                         <label for="notes" />
                         <field name="notes" colspan="4"/>

@@ -591,6 +591,7 @@ class protocollo_protocollo(orm.Model):
             STATE_SELECTION, 'Stato', readonly=True,
             help="Lo stato del protocollo.", select=True),
         'year': fields.integer('Anno', required=True),
+        'xml_data': fields.text('Segnatura xml')
     }
 
     def _get_default_name(self, cr, uid, context=None):
@@ -990,7 +991,9 @@ class protocollo_protocollo(orm.Model):
 
             segnatura_xml = SegnaturaXML(prot, prot_number, prot_date, cr, uid)
             xml = segnatura_xml.generate_segnatura_root()
-            print(etree.tostring(xml, pretty_print=True))
+            etree_tostring = etree.tostring(xml, pretty_print=True)
+            print(etree_tostring)
+            vals['xml_data'] = etree_tostring
             self.write(cr, uid, [prot.id], vals)
         return True
 
