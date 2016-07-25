@@ -62,9 +62,15 @@ this module contains the full copyright notices and license terms. -->
             <field name="model">protocollo.classification</field>
             <field name="arch" type="xml">
                 <form string="Titolario">
+                    <field name="class_type" />
+                    <newline/>
                     <field name="name" />
+                    <field name="code" />
+                	<field name="complete_name" />
                     <field name="parent_id" />
                     <field name="description" colspan="4"/>
+                    <field name="assigne" colspan="4"/>
+                    <field name="dossier_ids" colspan="4"/>
                 </form>
             </field>
         </record>
@@ -209,12 +215,95 @@ this module contains the full copyright notices and license terms. -->
             <field name="name">protocollo.dossier.form</field>
             <field name="model">protocollo.dossier</field>
             <field name="arch" type="xml">
-                <form string="Fascicolo">
-                    <field name="name" />
-                    <field name="office_id" />
-                    <field name="classification_id" />
-                    <field name="year" />
-                    <field name="user_id" />
+                <form string="Fascicolo" version="7.0">
+                   <header>
+                    	<div>
+		                    <button name="open" states="draft" string="Apri Fascicolo" />
+		                    <button name="close" states="open" string="Chiudi Fascicolo" />
+	                    </div>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,open,closed" statusbar_colors='{"open":"blue","closed":"green"}'/>
+                	</header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" class="oe_inline" />
+                            </h1>
+                            <label for="description" class="oe_edit_only"/>
+                            <h1>
+                                <field name="description" class="oe_inline" />
+                            </h1>
+                            <label for="date_open" class="oe_edit_only"/>
+                            <h2>
+                                <field name="date_open" />
+                            </h2>
+                            <label for="date_close" class="oe_edit_only"/>
+                            <h2>
+                                <field name="date_close" />
+                            </h2>
+                            <label for="classification_id" class="oe_edit_only"/>
+                            <h2>
+                                <field name="classification_id" on_change="on_change_dossier_type_classification(dossier_type, classification_id, parent_id)" />
+                            </h2>
+                            <label for="dossier_type" class="oe_edit_only"/>
+                            <h2>
+                            <field name="dossier_type" on_change="on_change_dossier_type_classification(dossier_type, classification_id, parent_id)" />
+                            </h2>
+                            <label for="dossier_typology" class="oe_edit_only"/>
+                            <h2>
+                            <field name="dossier_typology"/>
+                            </h2>
+                        </div>
+                        <group col="4" string="Informazioni Generali">
+                    		<field name="paperless" />
+                    		<newline/>
+                    		<field name="year" />
+                    		<newline/>
+                    		<field name="parent_id" on_change="on_change_dossier_type_classification(dossier_type, classification_id, parent_id)" domain ="[('dossier_type', '=', parent_type)]" attrs="{'invisible':[('dossier_type','=','fascicolo')], 'required': [('dossier_type','in',('sottofascicolo', 'inserto'))]}" />
+                    		
+                            <field name="parent_type" invisible="1" />
+                    		<newline/>
+                    		<field name="child_ids" attrs="{'invisible':[('dossier_type','=','inserto')]}" />
+                    		
+                    		<field name="partner_id" attrs="{'invisible':[('dossier_typology','not in ',('fisica', 'giuridica'))]}" />
+	                    </group>
+	                    <notebook>
+	                    	<page string="Documenti">
+                        	<group col="4">
+                    			<field name="document_ids" domain="['|',('user_id','=',uid),('office_comp_ids.group_ids.users.id','in',[uid])]"/>
+                        	</group>
+                    		</page>
+	                    	<page string="Attori Coinvolti">
+                        	<group col="4" attrs="{'invisible':[('dossier_typology','!=','procedimento')]}">
+                    			<field name="user_id" />
+                    			<field name="owner_partner_id" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                    			<field name="participant_partner_ids" />
+	                    	</group>
+	                    	</page>
+	                    	<page string="Permessi Fascicolo">
+                        	<group col="4">
+                        	<group col="2">
+                    			<field name="office_comp_ids" />
+                    			<field name="user_comp_ids" />
+                        	</group>
+                        	<group col="2">
+                    			<field name="office_view_ids" />
+                    			<field name="user_view_ids" />
+	                    	</group>
+                    	</group>
+                    	</page>
+	                    	<page string="Posizione Fisica Fascicolo" attrs="{'invisible':[('paperless','=',True)]}">
+                        	<group col="4">
+                    			<field name="address" />
+                    			<field name="building" />
+                    			<field name="floor" />
+                    			<field name="room" />
+	                    	</group>
+                    	</page>
+	                   </notebook>
+                    <label for="notes" />
+                    <field name="notes" />
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -394,15 +483,22 @@ this module contains the full copyright notices and license terms. -->
                             </field>
                         </group>
                         <notebook>
-                            <page string="Classificazioni">
-                              <group col="4">
-                                <field name="user_id" invisible="1"/>
-                                <label for="classification" />
-                                <label for="dossier" />
-                                <field name="classification" nolabel="1" />
-                                <field name="dossier" nolabel="1"/>
-                              </group>
-                            </page>
+	                    	<page string="Classificazioni">
+	                    	  <group col="4">
+	                    	  	<group>
+		                    		<label for="classification" />
+			                    	<field name="classification" nolabel="1"
+			                    	options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+		                    	</group>
+		                    	<group>
+		                    		<label for="dossier_ids" />
+			                    	<field name="dossier_ids" nolabel="1"
+			                    	options="{'limit': 10, 'create': false, 'create_edit': false}"
+			                    	domain="[('state','=','open')]"
+			                    	/>
+		                    	</group>
+		                      </group>
+	                    	</page>
                             <page string="Assegnatari">
                                 <field name="assigne" domain="[('parent_id','child_of',[%(protocollo_dept_root)d]),('assignable','=',True)]"/>
                             	<newline/>
@@ -479,7 +575,7 @@ this module contains the full copyright notices and license terms. -->
                     <field name="registration_date_to" filter_domain="[('registration_date','&lt;=',self)]"/>
                     <field name="classification"/>
                     <field name="typology"/>
-                    <field name="dossier"/>
+                    <field name="dossier_ids"/>
                     <field name="state" />
                </search>
             </field>

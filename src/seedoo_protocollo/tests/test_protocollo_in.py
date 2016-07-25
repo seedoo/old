@@ -45,7 +45,7 @@ class TestProtocolloIn(TestProtocolloBase):
         cr, uid = self.cr, self.uid
         partner_id = self.getIdDemoObj('base', 'main_partner')
         racc_id = self.getIdDemoObj('', 'protocollo_typology_rac')
-        com_varie_id = self.getIdDemoObj('', 'protocollo_classification_6')
+        com_varie_id = self.getIdDemoObj('seedoo_gedoc', 'protocollo_classification_6')
         send_rec_id = self.modelProtSendRec.create(
             cr, uid,
             {
@@ -84,7 +84,8 @@ class TestProtocolloIn(TestProtocolloBase):
         """Testing received a pec mail and registred """
         cr, uid = self.cr, self.uid
         self.receivePec()
-        com_varie_id = self.getIdDemoObj('', 'protocollo_classification_6')
+        com_varie_id = self.getIdDemoObj(
+            'seedoo_gedoc', 'protocollo_classification_6')
         context = {'pec_messages': True}
         pec_todo = self.message_model.search(
             cr, uid,
@@ -150,7 +151,7 @@ class TestProtocolloIn(TestProtocolloBase):
     def test_4_delete_prot_pdf_in(self):
         cr, uid = self.cr, self.uid
         racc_id = self.getIdDemoObj('', 'protocollo_typology_rac')
-        com_varie_id = self.getIdDemoObj('', 'protocollo_classification_6')
+        com_varie_id = self.getIdDemoObj('seedoo_gedoc', 'protocollo_classification_6')
         send_rec_id = self.modelProtSendRec.search(
             cr, uid, [('name', '=', 'test_partner')])[0]
         prot_id = self.modelProtocollo.create(
@@ -180,7 +181,7 @@ class TestProtocolloIn(TestProtocolloBase):
         cr, uid = self.cr, self.uid
         partner_id = self.getIdDemoObj('base', 'main_partner')
         racc_id = self.getIdDemoObj('', 'protocollo_typology_rac')
-        com_varie_id = self.getIdDemoObj('', 'protocollo_classification_6')
+        com_varie_id = self.getIdDemoObj('seedoo_gedoc', 'protocollo_classification_6')
         send_rec_id = self.modelProtSendRec.create(
             cr, uid,
             {

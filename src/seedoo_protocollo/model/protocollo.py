@@ -32,44 +32,6 @@ class protocollo_typology(orm.Model):
     }
 
 
-class protocollo_classification(orm.Model):
-    _name = 'protocollo.classification'
-
-    def name_get(self, cr, uid, ids, context=None):
-        if isinstance(ids, (list, tuple)) and not len(ids):
-            return []
-        if isinstance(ids, (long, int)):
-            ids = [ids]
-        reads = self.read(
-            cr, uid, ids, ['name', 'parent_id'], context=context)
-        res = []
-        for record in reads:
-            name = record['name']
-            if record['parent_id']:
-                name = record['parent_id'][1] + ' / ' + name
-            res.append((record['id'], name))
-        return res
-
-    def _name_get_fnc(self, cr, uid, ids, prop, unknow_none, context=None):
-        res = self.name_get(cr, uid, ids, context=context)
-        return dict(res)
-
-    _columns = {
-        'name': fields.char('Nome', size=256, required=True),
-        'parent_id': fields.many2one(
-            'protocollo.classification', 'Padre'),
-        'child_ids': fields.one2many(
-            'protocollo.classification',
-            'parent_id',
-            'Figli'),
-        'complete_name': fields.function(
-            _name_get_fnc, type="char",
-            string='Nome Completo'),
-        'description': fields.text('Descrizione')
-        # TODO: check if classification is linked to an office
-    }
-
-
 class protocollo_sender_receiver(orm.Model):
     _name = 'protocollo.sender_receiver'
 
@@ -140,31 +102,6 @@ class protocollo_sender_receiver(orm.Model):
         sender_receiver = super(protocollo_sender_receiver, self).\
             create(cr, uid, vals, context=context)
         return sender_receiver
-
-
-class protocollo_dossier(orm.Model):
-    _name = 'protocollo.dossier'
-
-    _columns = {
-        'name': fields.char('Nome Fascicolo', size=256, required=True),
-        'office_id': fields.many2one(
-            'hr.department', 'Ufficio', required=True),
-        'classification_id': fields.many2one(
-            'protocollo.classification', 'Rif. Titolario'),
-        'year': fields.char('Anno', size=4),
-        'user_id': fields.many2one(
-            'res.users', 'Responsabile', readonly=True),
-        # TODO: verify next fields.
-        # Tipo (Ordinario/Virtuale)
-        # Posizione
-        # Data creazione
-        # Data carico
-        # Data Evidenza
-        # Edificio
-        # Palazzo
-        # Piano
-        # Stanza
-    }
 
 
 class protocollo_registry(orm.Model):
@@ -554,10 +491,11 @@ class protocollo_protocollo(orm.Model):
             _get_assigne_emails, type='char',
             string='Email Destinatari'),
         'assigne_cc': fields.boolean('Inserisci gli Assegnatari in CC'),
-        'dossier': fields.many2one(
-            'protocollo.dossier', 'Fascicolo', required=False,
-            readonly=True,
-            states={'draft': [('readonly', False)]}),
+        'dossier_ids': fields.many2many(
+            'protocollo.dossier',
+            'dossier_protocollo_rel',
+            'protocollo_id', 'dossier_id',
+            'Fascicoli'),
         'registry': fields.many2one('protocollo.registry',
                                     'Registro',
                                     required=True,

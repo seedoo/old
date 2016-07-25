@@ -61,9 +61,11 @@ class wizard(osv.TransientModel):
                                           required=True,),
         'sender_protocol': fields.char('Protocollo Mittente',
                                        required=False,),
-
-        'dossier': fields.many2one('protocollo.dossier', 'Fascicolo',
-                                   required=False,),
+        'dossier_ids': fields.many2many(
+            'protocollo.dossier',
+            'dossier_protocollo_pec_rel',
+            'wizard_id', 'dossier_id',
+            'Fascicoli'),
         'notes': fields.text('Note'),
         'cause': fields.text('Motivo della Modifica', required=True),
     }
@@ -132,13 +134,13 @@ class wizard(osv.TransientModel):
             )
         return protocollo.sender_protocol
 
-    def _default_dossier(self, cr, uid, context):
+    def _default_dossier_ids(self, cr, uid, context):
         protocollo = self.pool.get('protocollo.protocollo').browse(
             cr,
             uid,
             context['active_id']
             )
-        return protocollo.dossier.id
+        return [(6, 0, protocollo.dossier_ids)]
 
     def _default_notes(self, cr, uid, context):
         protocollo = self.pool.get('protocollo.protocollo').browse(
@@ -157,7 +159,7 @@ class wizard(osv.TransientModel):
         'subject': _default_subject,
         'classification': _default_classification,
         'sender_protocol': _default_sender_protocol,
-        'dossier': _default_dossier,
+        'dossier_ids': _default_dossier_ids,
         'notes': _default_notes,
     }
 
@@ -234,16 +236,16 @@ class wizard(osv.TransientModel):
             'Protocollo Mittente',
             wizard.sender_protocol or ''
         )
-        vals['dossier'] = wizard.dossier and wizard.dossier.id or False
+        vals['dossier_ids'] = [[6, 0, [d.id for d in wizard.dossier_ids]]]
         before = self.set_before(
             before,
             'Fascicolo',
-            protocollo.dossier.name or ''
+            ', '.join([d.name for d in protocollo.dossier_ids])
         )
         after = self.set_after(
             after,
             'Fascicolo',
-            wizard.dossier.name or ''
+            ', '.join([dw.name for dw in wizard.dossier_ids])
         )
         vals['notes'] = wizard.notes
         before = self.set_before(before, 'Note', protocollo.notes or '')

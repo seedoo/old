@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+    <record model='ir.ui.view' id='protocollo_dossier_form'>
+       <field name="name">protocollo.dossier.form</field>
+       <field name="model">protocollo.dossier</field>
+       <field name="inherit_id" ref="seedoo_gedoc.protocollo_dossier_form"/>
+       <field name="arch" type="xml">
+          <field name="document_ids" position="before" version="7.0">
+   			<newline/>
+            <field name="protocollo_ids" domain="[('state','in',('notified','sent'))]"/>
+          </field>
+       </field>
+    </record>
+	
+    <act_window
+        domain="[('dossier_ids', 'in', [active_id])]"
+        context="{'default_dossier_ids': active_id}"
+        id="zoom_protocollo_document" name="Protocolli Collegati"
+        res_model="protocollo.protocollo"
+        src_model="protocollo.dossier"/>
+
+    <menuitem action="protocollo_protocollo_notified_act" parent="seedoo_gedoc.gedoc_document_menu" id="gedoc_protocollo_all_notified_menu" sequence="10" groups="group_protocollo_user,group_protocollo_manager"/>
+
+    </data>
+</openerp>

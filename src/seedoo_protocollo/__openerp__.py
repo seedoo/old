@@ -44,6 +44,7 @@ Configure ir.attachment.location
             'hr',
             'email_template',
             'report_webkit',
+            'seedoo_gedoc',
             'l10n_it_pec_messages'],
     'data':
         [
@@ -52,6 +53,7 @@ Configure ir.attachment.location
             'security/ir.model.access.csv',
             'data/protocollo_sequence.xml',
             'data/protocollo_data.xml',
+            'gedoc/data/gedoc_data.xml',
             'wizard/cancel_protocollo_wizard_view.xml',
             'wizard/modify_protocollo_wizard_view.xml',
             'wizard/create_protocollo_pec_wizard_view.xml',
@@ -61,13 +63,13 @@ Configure ir.attachment.location
             'view/ir_attachment_view.xml',
             'view/protocollo_view.xml',
             'view/mail_pec_view.xml',
+            'gedoc/view/gedoc_view.xml',
             'wizard/create_journal_wizard_view.xml',
             'wizard/create_emergency_registry_wizard_view.xml',
             'workflow/protocollo_workflow.xml',
             'data/protocollo_report.xml'],
     'demo': [
         'demo/data.xml',
-        'demo/protocollo.classification.csv',
         ],
     'installable': True,
     'application': True,
