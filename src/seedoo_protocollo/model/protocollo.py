@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # This file is part of Seedoo.  The COPYRIGHT file at the top level of
 # this module contains the full copyright notices and license terms.
+from lxml import etree
 
 from openerp import SUPERUSER_ID
 from openerp.osv import orm,  fields
-from tools.translate import _
+from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DSDT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DSDF
 import openerp.exceptions
@@ -19,6 +20,8 @@ import magic
 import datetime
 import time
 import logging
+
+from seedoo_protocollo.segnatura.segnatura_xml import SegnaturaXML
 
 _logger = logging.getLogger(__name__)
 mimetypes.init()
@@ -79,14 +82,17 @@ class protocollo_sender_receiver(orm.Model):
             partner = self.pool.get('res.partner').\
                 browse(cr, uid, partner_id, context=context)
             values = {
-                'type': partner.is_company and 'individual' or 'legal',
+                # 'type': partner.is_company and 'individual' or 'legal',
+                'type': partner.legal_type,
+                'ident_code': partner.ident_code,
+                'ammi_code': partner.ammi_code,
                 'name': partner.name,
                 'street': partner.street,
                 'city': partner.city,
                 'country_id': (
                     partner.country_id and
                     partner.country_id.id or False),
-                'email_from': partner.email,
+                'email': partner.email,
                 'phone': partner.phone,
                 'mobile': partner.mobile,
                 'pec_mail': partner.pec_mail,
@@ -103,8 +109,20 @@ class protocollo_sender_receiver(orm.Model):
         'type': fields.selection(
             [
                 ('individual', 'Persona Fisica'),
-                ('legal', 'Persona Giuridica'),
+                ('legal', 'Azienda privata'),
+                ('government', 'Amministrazione pubblica')
             ], 'Tipologia', size=32, required=True),
+
+        'ident_code': fields.char(
+            'Codice Identificativo Area',
+            size=256,
+            required=False),
+
+        'ammi_code': fields.char(
+            'Codice Amministrazione',
+            size=256,
+            required=False),
+
         'save_partner': fields.boolean(
             'Salva',
             help='Se spuntato salva i dati in anagrafica.'),
@@ -573,6 +591,7 @@ class protocollo_protocollo(orm.Model):
             STATE_SELECTION, 'Stato', readonly=True,
             help="Lo stato del protocollo.", select=True),
         'year': fields.integer('Anno', required=True),
+        'xml_data': fields.text('Segnatura xml')
     }
 
     def _get_default_name(self, cr, uid, context=None):
@@ -901,19 +920,24 @@ class protocollo_protocollo(orm.Model):
                     values = {}
                     partner_obj = self.pool.get('res.partner')
                     values = {
-                        'is_company': send_rec.type == 'legal' and
-                        True or False,
+                        # TODO Gestire il campo is_company per descrivere un'amministrazione/azienda privata
+                        # TODO composta da più unità organizzative
+                        # 'is_company': send_rec.type == 'legal' and
+                        # True or False,
                         'name': send_rec.name,
                         'street': send_rec.street,
                         'city': send_rec.city,
                         'country_id': send_rec.country_id and
                         send_rec.country_id.id or False,
-                        'email_from': send_rec.email,
+                        'email': send_rec.email,
                         'pec_mail': send_rec.pec_mail,
                         'phone': send_rec.phone,
                         'mobile': send_rec.mobile,
                         'fax': send_rec.fax,
                         'zip': send_rec.zip,
+                        'legal_type': send_rec.type,
+                        'ident_code': send_rec.ident_code,
+                        'ammi_code': send_rec.ammi_code
                     }
                     partner_id = partner_obj.create(cr, uid, values)
                     send_rec_obj.write(
@@ -928,7 +952,7 @@ class protocollo_protocollo(orm.Model):
         for prot in self.browse(cr, uid, ids):
             if not prot.sender_receivers:
                 send_rec = prot.type == 'in' and 'mittenti' \
-                    or 'destinatari'
+                           or 'destinatari'
                 raise openerp.exceptions.Warning(_('Mancano i %s'
                                                    % send_rec))
             if prot.type == 'out' and prot.pec:
@@ -943,15 +967,15 @@ class protocollo_protocollo(orm.Model):
                 if prot.doc_id:
                     if prot.mimetype == 'application/pdf':
                         self._sign_doc(
-                            cr, uid, prot,
-                            prot_number, prot_date
+                                cr, uid, prot,
+                                prot_number, prot_date
                         )
                     fingerprint = self._create_protocol_attachment(
-                        cr,
-                        uid,
-                        prot,
-                        prot_number,
-                        prot_date
+                            cr,
+                            uid,
+                            prot,
+                            prot_number,
+                            prot_date
                     )
                     vals['fingerprint'] = fingerprint
                     vals['datas'] = 0
@@ -959,11 +983,18 @@ class protocollo_protocollo(orm.Model):
                 vals['registration_date'] = prot_date
                 now = datetime.datetime.now()
                 vals['year'] = now.year
-                self.write(cr, uid, [prot.id], vals)
             except Exception as e:
                 _logger.error(e)
                 raise openerp.exceptions.Warning(_('Errore nella \
                     registrazione del protocollo'))
+                continue
+
+            segnatura_xml = SegnaturaXML(prot, prot_number, prot_date, cr, uid)
+            xml = segnatura_xml.generate_segnatura_root()
+            etree_tostring = etree.tostring(xml, pretty_print=True)
+            print(etree_tostring)
+            vals['xml_data'] = etree_tostring
+            self.write(cr, uid, [prot.id], vals)
         return True
 
     def action_notify(self, cr, uid, ids, *args):

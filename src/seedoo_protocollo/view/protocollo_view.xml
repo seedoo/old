@@ -266,6 +266,8 @@ this module contains the full copyright notices and license terms. -->
                 <form string="Mittenti/Destinatari">
                     <field name="save_partner" attrs="{'readonly': ['|',('partner_id','!=',False),('partner_id','is not',None)]}"/>
                     <field name="type" />
+                    <field name="ident_code" />
+                    <field name="ammi_code" />
                     <field name="partner_id" />
                     <field name="name" />
                     <field name="street" />
@@ -291,6 +293,8 @@ this module contains the full copyright notices and license terms. -->
                 <tree string="Mittenti/Destinatari" editable="bottom" >
                     <field name="save_partner" attrs="{'readonly': ['|',('partner_id','!=',False),('partner_id','is not',None)]}"/>
                     <field name="type" />
+                    <field name="ident_code" attrs="{'readonly': [('type','in',('legal', 'individual'))]}"/>
+                    <field name="ammi_code" attrs="{'required': [('type','=','government')], 'readonly': [('type','in',('legal', 'individual'))]}"/>
                     <field name="partner_id" on_change="on_change_partner(partner_id)" attrs="{'readonly': [('save_partner','=',True)]}"/>
                     <field name="name" />
                     <field name="street" />
@@ -434,6 +438,10 @@ this module contains the full copyright notices and license terms. -->
                                         <field name="after" attrs="{'invisible':[('type','=', 'cancel')]}"/>
                                     </form>
                                 </field>
+                            </page>
+                            <page string="Segnatura XML">
+                                <label for="xml_data" />
+                                <field name="xml_data" colspan="4"/>
                             </page>
                         </notebook>
                         <label for="notes" />
