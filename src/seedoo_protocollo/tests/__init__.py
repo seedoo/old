@@ -8,6 +8,6 @@ from . import test_wizard_protocollo
 
 checks = [
     test_protocollo_in,
-    # test_protocollo_out,
-    # test_wizard_protocollo,
+    test_protocollo_out,
+    test_wizard_protocollo,
 ]

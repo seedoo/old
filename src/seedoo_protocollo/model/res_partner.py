@@ -12,35 +12,14 @@ _logger = logging.getLogger(__name__)
 
 
 class ResPartner(orm.Model):
-
     # inherit partner because PEC mails are not supposed to be associate to
     # generic models
     _inherit = "res.partner"
 
-
-    # _columns = {
-    #     'juridical_type': fields.selection(
-    #         [
-    #             ('individual', 'Persona Fisica'),
-    #             ('legal', 'Azienda privata'),
-    #             ('government', 'Amministrazione pubblica')
-    #         ], 'Tipologia', size=32, required=False),
-    #
-    #     'ident_code': fields.char(
-    #         'Codice Identificativo Area',
-    #         size=256,
-    #         required=False),
-    #
-    #     'ammi_code': fields.char(
-    #         'Codice Amministrazione',
-    #         size=256,
-    #         required=False)
-    # }
-
     def message_post(
-        self, cr, uid, thread_id, body='', subject=None, type='notification',
-        subtype=None, parent_id=False, attachments=None, context=None,
-        content_subtype='html', **kwargs
+            self, cr, uid, thread_id, body='', subject=None, type='notification',
+            subtype=None, parent_id=False, attachments=None, context=None,
+            content_subtype='html', **kwargs
     ):
         if context is None:
             context = {}
@@ -49,11 +28,11 @@ class ResPartner(orm.Model):
             subtype=subtype, parent_id=parent_id, attachments=attachments,
             context=context, content_subtype=content_subtype, **kwargs)
         if (
-            context.get('main_message_id') and
-            (
-                context.get('pec_type') or
-                context.get('send_error')
-            )
+                    context.get('main_message_id') and
+                    (
+                                context.get('pec_type') or
+                                context.get('send_error')
+                    )
         ):
             wf_service = netsvc.LocalService("workflow")
             _logger.info('workflow: mail message trigger')

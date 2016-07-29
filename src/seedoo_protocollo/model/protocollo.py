@@ -4,7 +4,7 @@
 from lxml import etree
 
 from openerp import SUPERUSER_ID
-from openerp.osv import orm,  fields
+from openerp.osv import orm, fields
 from openerp.tools.translate import _
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DSDT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DSDF
@@ -79,7 +79,7 @@ class protocollo_sender_receiver(orm.Model):
     def on_change_partner(self, cr, uid, ids, partner_id, context=None):
         values = {}
         if partner_id:
-            partner = self.pool.get('res.partner').\
+            partner = self.pool.get('res.partner'). \
                 browse(cr, uid, partner_id, context=context)
             values = {
                 # 'type': partner.is_company and 'individual' or 'legal',
@@ -155,7 +155,7 @@ class protocollo_sender_receiver(orm.Model):
     }
 
     def create(self, cr, uid, vals, context=None):
-        sender_receiver = super(protocollo_sender_receiver, self).\
+        sender_receiver = super(protocollo_sender_receiver, self). \
             create(cr, uid, vals, context=context)
         return sender_receiver
 
@@ -336,7 +336,7 @@ class protocollo_protocollo(orm.Model):
 
     def _is_visible_search(self, cursor, user, obj, name,
                            args, domain=None, context=None):
-        office_ids = self.pool.get('res.users').\
+        office_ids = self.pool.get('res.users'). \
             get_user_offices(cursor, user, context)
         offices = ', '.join(map(str, office_ids)) or str(0)
         cursor.execute("select p.id \
@@ -401,7 +401,7 @@ class protocollo_protocollo(orm.Model):
                     collaborator.name for
                     collaborator in office.collaborator_ids
                     if collaborator.to_notify
-                ]
+                    ]
                 users.extend(office_assigne_users)
             users = list(set(users))
             emails = ','.join([user.email for user in users if user.email])
@@ -433,9 +433,9 @@ class protocollo_protocollo(orm.Model):
         res = dict.fromkeys(ids, False)
         for protocol in self.browse(cr, uid, ids):
             res[protocol.id] = u"\n".join(
-               [line.name for line
-                in protocol.sender_receivers
-                ]
+                [line.name for line
+                 in protocol.sender_receivers
+                 ]
             )
         return res
 
@@ -464,7 +464,7 @@ class protocollo_protocollo(orm.Model):
                 ('emergency', 'Emergenza'),
             ], 'Tipologia Registrazione', size=32, required=True,
             readonly=True,
-            states={'draft': [('readonly', False)]},),
+            states={'draft': [('readonly', False)]}, ),
         'type': fields.selection(
             [
                 ('out', 'Uscita'),
@@ -510,13 +510,13 @@ class protocollo_protocollo(orm.Model):
         'receiving_date': fields.datetime('Data Ricevimento',
                                           required=True,
                                           readonly=True,
-                                          states={'draft':
-                                                  [('readonly', False)]
+                                          states={
+                                              'draft': [('readonly', False)]
                                                   }),
         'subject': fields.text('Oggetto',
                                required=True,
                                readonly=True,
-                               states={'draft': [('readonly', False)]},),
+                               states={'draft': [('readonly', False)]}, ),
         'datas_fname': fields.char(
             'Nome Documento', size=256, readonly=False),
         'datas': fields.binary('File Documento',
@@ -533,8 +533,8 @@ class protocollo_protocollo(orm.Model):
                                           'Titolario di Classificazione',
                                           required=True,
                                           readonly=True,
-                                          states={'draft':
-                                                  [('readonly', False)]
+                                          states={
+                                              'draft': [('readonly', False)]
                                                   }),
         'emergency_protocol': fields.char(
             'Protocollo Emergenza', size=64, required=False,
@@ -549,8 +549,7 @@ class protocollo_protocollo(orm.Model):
                                        size=64,
                                        required=False,
                                        readonly=True,
-                                       states={'draft':
-                                               [('readonly', False)]
+                                       states={'draft': [('readonly', False)]
                                                }),
         'sender_receivers': fields.one2many(
             'protocollo.sender_receiver', 'protocollo_id',
@@ -650,7 +649,7 @@ class protocollo_protocollo(orm.Model):
          'Elemento già presente nel DB!'),
         ('protocol_mail_pec_ref_unique', 'unique(mail_pec_ref)',
          'Meggaggio PEC protocollato in precedenza!')
-        ]
+    ]
 
     def _get_next_number_normal(self, cr, uid, prot):
         sequence_obj = self.pool.get('ir.sequence')
@@ -697,7 +696,7 @@ class protocollo_protocollo(orm.Model):
             for enum in er.emergency_ids:
                 if not enum.protocol_id:
                     num = enum.name
-                    self.pool.get('protocollo.emergency.registry.line').\
+                    self.pool.get('protocollo.emergency.registry.line'). \
                         write(cr, uid, [enum.id], {'protocol_id': prot.id})
                     break
             reg_available = [e.id for e in er.emergency_ids
@@ -772,6 +771,7 @@ class protocollo_protocollo(orm.Model):
             import hashlib
             with open(filepath, 'rb') as f:
                 return hashlib.sha1(f.read()).hexdigest()
+
         pd = prot_date.split(' ')[0]
         prot_date = datetime.datetime.strptime(pd, DSDT)
         prot_def = prot.registry.company_id.ammi_code + ' ' + \
@@ -780,10 +780,11 @@ class protocollo_protocollo(orm.Model):
             prot_date.strftime(
                 DSDT) + ' - ' + \
             prot_number
-        location = self.pool.get('ir.config_parameter')\
+        location = self.pool.get('ir.config_parameter') \
             .get_param(cr, uid, 'ir_attachment.location') + '/protocollazioni'
-        signatureCmd = self.pool.get('ir.config_parameter')\
-            .get_param(cr, uid, 'itext.location') + '/signature.sh'
+        signatureCmd = self.pool.get('ir.config_parameter') \
+            .get_param(cr, uid, 'itext.location') + \
+            '/signature.sh'
         file_path = self._full_path(cr, uid, location, prot.doc_id.store_fname)
         maintain_orig = False
         strong_encryption = False
@@ -826,6 +827,7 @@ class protocollo_protocollo(orm.Model):
             import hashlib
             with open(filepath, 'rb') as f:
                 return hashlib.sha1(f.read()).hexdigest()
+
         parent_id = 0
         ruid = 0
         if prot.reserved:
@@ -843,12 +845,12 @@ class protocollo_protocollo(orm.Model):
             'name': 'Protocollo_' + prot_number + '_' + str(prot.year) + ext,
             'datas': attachment.datas,
             'datas_fname': 'Protocollo_' + prot_number +
-            '_' + str(prot.year) + ext,
+                           '_' + str(prot.year) + ext,
             'res_model': 'protocollo.protocollo',
             'is_protocol': True,
             'reserved': prot.reserved,
             'res_id': prot.id,
-            }
+        }
         if parent_id:
             attach_vals['parent_id'] = parent_id
         user_id = ruid or uid
@@ -857,7 +859,7 @@ class protocollo_protocollo(orm.Model):
             cr, uid, prot.id,
             {'doc_id': attachment_id, 'datas': 0})
         attachment_obj.unlink(cr, SUPERUSER_ID, old_attachment_id)
-        location = self.pool.get('ir.config_parameter')\
+        location = self.pool.get('ir.config_parameter') \
             .get_param(cr, uid, 'ir_attachment.location') + '/protocollazioni'
         new_attachment = attachment_obj.browse(cr, user_id, attachment_id)
         file_path = self._full_path(
@@ -865,13 +867,13 @@ class protocollo_protocollo(orm.Model):
         return sha1OfFile(file_path)
 
     def _create_protocol_security_folder(self, cr, uid, prot, prot_number):
-        group_reserved_id = self.pool.get('ir.model.data').\
+        group_reserved_id = self.pool.get('ir.model.data'). \
             get_object_reference(cr, uid, 'seedoo_protocollo',
                                  'group_protocollo_reserved_manager')[1]
         directory_obj = self.pool.get('document.directory')
-        directory_root_id = self.pool.get('ir.model.data').\
+        directory_root_id = self.pool.get('ir.model.data'). \
             get_object_reference(
-                cr, uid, 'seedoo_protocollo', 'dir_protocol')[1]
+            cr, uid, 'seedoo_protocollo', 'dir_protocol')[1]
         ruid = prot.registry.company_id.reserved_user_id and \
             prot.registry.company_id.reserved_user_id.id or None
         if not ruid:
@@ -898,7 +900,6 @@ class protocollo_protocollo(orm.Model):
                     'datas_fname': prot.datas_fname,
                     'res_model': 'protocollo.protocollo',
                     'is_protocol': True,
-                    # 'reserved': prot.reserved,
                     'res_id': prot.id,
                 }
                 protocollo_obj = self.pool.get('protocollo.protocollo')
@@ -921,10 +922,6 @@ class protocollo_protocollo(orm.Model):
                     values = {}
                     partner_obj = self.pool.get('res.partner')
                     values = {
-                        # TODO Gestire il campo is_company per descrivere un'amministrazione/azienda privata
-                        # TODO composta da più unità organizzative
-                        # 'is_company': send_rec.type == 'legal' and
-                        # True or False,
                         'name': send_rec.name,
                         'street': send_rec.street,
                         'city': send_rec.city,
@@ -968,15 +965,15 @@ class protocollo_protocollo(orm.Model):
                 if prot.doc_id:
                     if prot.mimetype == 'application/pdf':
                         self._sign_doc(
-                                cr, uid, prot,
-                                prot_number, prot_date
+                            cr, uid, prot,
+                            prot_number, prot_date
                         )
                     fingerprint = self._create_protocol_attachment(
-                            cr,
-                            uid,
-                            prot,
-                            prot_number,
-                            prot_date
+                        cr,
+                        uid,
+                        prot,
+                        prot_number,
+                        prot_date
                     )
                     vals['fingerprint'] = fingerprint
                     vals['datas'] = 0
@@ -1005,16 +1002,17 @@ class protocollo_protocollo(orm.Model):
                 raise openerp.exceptions.Warning(_('Errore nella \
                     notifica del protocollo, mancano gli assegnatari'))
             if prot.reserved:
-                template_reserved_id = self.pool.get('ir.model.data').\
+                template_reserved_id = self.pool.get('ir.model.data'). \
                     get_object_reference(cr, uid, 'seedoo_protocollo',
                                          'notify_reserved_protocol')[1]
-                email_template_obj.send_mail(cr, uid,
-                                             template_reserved_id,
-                                             prot.id,
-                                             force_send=True
+                email_template_obj.send_mail(
+                    cr, uid,
+                    template_reserved_id,
+                    prot.id,
+                    force_send=True
                                              )
             if prot.assigne_emails:
-                template_id = self.pool.get('ir.model.data').\
+                template_id = self.pool.get('ir.model.data'). \
                     get_object_reference(cr, uid, 'seedoo_protocollo',
                                          'notify_protocol')[1]
                 email_template_obj.send_mail(cr, uid,
@@ -1084,8 +1082,9 @@ class protocollo_protocollo(orm.Model):
                                                   )
             if attachment_ids:
                 values['attachment_ids'] = [(6, 0, attachment_ids)]
-                mail_mail.write(cr, uid, msg_id, {'attachment_ids':
-                                                  [(6, 0, attachment_ids)]}
+                mail_mail.write(
+                    cr, uid, msg_id,
+                    {'attachment_ids': [(6, 0, attachment_ids)]}
                                 )
             vals = {'mail_out_ref': mail.id,
                     'mail_pec_ref': mail.mail_message_id.id}
@@ -1146,9 +1145,9 @@ class protocollo_protocollo(orm.Model):
             [
                 ('state', '=', 'closed'),
                 ('date',
-                    '=',
-                    time.strftime(
-                        DSDT)), ]
+                 '=',
+                 time.strftime(
+                     DSDT)), ]
         )
         if journal_id:
             raise orm.except_orm(
@@ -1160,19 +1159,19 @@ class protocollo_protocollo(orm.Model):
     def has_offices(self, cr, uid, ids, *args):
         for protocol in self.browse(cr, uid, ids):
             if protocol.assigne and protocol.type == 'in':
-                    return True
+                return True
         return False
 
     def create(self, cr, uid, vals, context=None):
         if 'sender_receivers' not in vals or not vals['sender_receivers']:
             send_rec = context['default_type'] == 'in' and 'mittente' \
-                or 'destinatario'
+                       or 'destinatario'
             raise orm.except_orm(
                 _('Attenzione!'),
                 _('Necessario inserire almeno un %s'
                   % send_rec)
             )
-        protocol = super(protocollo_protocollo, self).\
+        protocol = super(protocollo_protocollo, self). \
             create(cr, uid, vals, context=context)
         return protocol
 
@@ -1228,8 +1227,8 @@ class protocollo_journal(orm.Model):
             readonly=True,
             help="Lo stato del protocollo.",
             select=True,
-            ),
-        }
+        ),
+    }
 
     _defaults = {
         'name': time.strftime(
@@ -1250,55 +1249,55 @@ class protocollo_journal(orm.Model):
 
         protocollo_obj = self.pool.get('protocollo.protocollo')
         if last_journal_id:
-                today = datetime.datetime.now()
-                last_journal = journal_obj.browse(cr, uid, last_journal_id[0])
-                last_journal_date = datetime.datetime.strptime(
-                    last_journal.date,
-                    DSDT
+            today = datetime.datetime.now()
+            last_journal = journal_obj.browse(cr, uid, last_journal_id[0])
+            last_journal_date = datetime.datetime.strptime(
+                last_journal.date,
+                DSDT
+            )
+            num_days = (today - last_journal_date).days
+            if num_days in (0, 1):
+                return True
+            for day in range(1, num_days):
+                last_date = (
+                    last_journal_date + datetime.timedelta(days=day))
+                protocol_ids = protocollo_obj.search(cr, uid, [
+                    ('state', 'in', [
+                        'registered',
+                        'notified',
+                        'sent',
+                        'waiting',
+                        'error',
+                        'canceled']),
+                    ('registration_date',
+                     '>',
+                     last_date.strftime(DSDT) +
+                     ' 00:00:00'),
+                    ('registration_date',
+                     '<',
+                     last_date.strftime(DSDT) +
+                     ' 23:59:59'),
+                ])
+                try:
+                    journal_obj.create(
+                        cr, uid,
+                        {
+                            'name': last_date.
+                            strftime(DSDF),
+                            'user_id': uid,
+                            'protocol_ids': [[6, 0,
+                                              protocol_ids]
+                                             ],
+                            'date': last_date.strftime(DSDT),
+                            'state': 'closed',
+                        }
                     )
-                num_days = (today - last_journal_date).days
-                if num_days in (0, 1):
-                    return True
-                for day in range(1, num_days):
-                    last_date = (
-                        last_journal_date + datetime.timedelta(days=day))
-                    protocol_ids = protocollo_obj.search(cr, uid, [
-                        ('state', 'in', [
-                            'registered',
-                            'notified',
-                            'sent',
-                            'waiting',
-                            'error',
-                            'canceled']),
-                        ('registration_date',
-                            '>',
-                            last_date.strftime(DSDT) +
-                            ' 00:00:00'),
-                        ('registration_date',
-                            '<',
-                            last_date.strftime(DSDT) +
-                            ' 23:59:59'),
-                        ])
-                    try:
-                        journal_obj.create(
-                            cr, uid,
-                            {
-                                'name': last_date.
-                                strftime(DSDF),
-                                'user_id': uid,
-                                'protocol_ids': [[6, 0,
-                                                  protocol_ids]
-                                                 ],
-                                'date': last_date.strftime(DSDT),
-                                'state': 'closed',
-                            }
-                        )
-                    except Exception as e:
-                        _logger.exception(
-                            "Unable to create Protocol Journal %s"
-                            % last_date.strftime(DSDT))
-                        _logger.info(e)
-                        return False
+                except Exception as e:
+                    _logger.exception(
+                        "Unable to create Protocol Journal %s"
+                        % last_date.strftime(DSDT))
+                    _logger.info(e)
+                    return False
         else:
             protocol_ids = protocollo_obj.search(cr, uid, [
                 ('state', 'in', ['registered',
@@ -1315,7 +1314,7 @@ class protocollo_journal(orm.Model):
                  '<',
                  time.strftime(DSDT) +
                  ' 23:59:59'),
-                ])
+            ])
             try:
                 journal_id = journal_obj.create(
                     cr, uid,
@@ -1341,7 +1340,6 @@ class protocollo_journal(orm.Model):
 
 
 class protocollo_emergency_registry_line(orm.Model):
-
     _name = 'protocollo.emergency.registry.line'
 
     _columns = {
@@ -1398,17 +1396,17 @@ class protocollo_emergency_registry(orm.Model):
             'emergency_id',
             'Numeri Riservati e Protocollazioni',
             required=False,
-            readonly=True,),
+            readonly=True, ),
         'state': fields.selection(
             STATE_SELECTION,
             'Status',
             readonly=True,
             help="Lo stato del protocollo.",
             select=True,
-            ),
-        }
+        ),
+    }
 
     _defaults = {
         'user_id': lambda obj, cr, uid, context: uid,
         'state': 'draft',
-        }
+    }

@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 # This file is part of Seedoo.  The COPYRIGHT file at the top level of
 # this module contains the full copyright notices and license terms.
+import dateutil
 import inspect
 import os
-
-import dateutil
 from lxml import etree
-from datetime import datetime
+
 # from seedoo_protocollo.model.protocollo import protocollo_protocollo
 import openerp
 from openerp.tools.translate import _
 
 
 class SegnaturaXML:
-
     def __init__(self, protocollo, prot_number, prot_date, cr, uid):
         self.protocollo = protocollo
         self.prot_number = prot_number
@@ -33,7 +31,7 @@ class SegnaturaXML:
         companyId = self.currentUser.company_id.id
         self.company = self.resCompanyObj.browse(cr, uid, companyId)
 
-        if self.company.ident_code != False:
+        if self.company.ident_code is not False:
             self.codiceAOO = str(self.company.ident_code)
         else:
             self.codiceAOO = None
@@ -46,21 +44,16 @@ class SegnaturaXML:
         descrizione = self.createDescrizione()
         root.append(intestazione)
         root.append(descrizione)
-
-        # return root
-        # TODO Ripristinare validazione xml
         if self.validateXml(root):
             return root
         else:
-            raise openerp.exceptions.Warning(_('Errore nella validazione xml segnatura'))
-
+            raise openerp.exceptions.Warning(
+                _('Errore nella validazione xml segnatura'))
 
     def validateXml(self, root):
-
-        directory_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+        directory_path = os.path.dirname(
+            os.path.abspath(inspect.getfile(inspect.currentframe())))
         fullPath = os.path.join(directory_path, '../data/segnatura.dtd')
-
-        # dtdfile = open("data/segnatura.dtd", 'r')
         dtdfile = open(fullPath, 'r')
         dtd = etree.DTD(dtdfile)
         isValid = dtd.validate(root)
@@ -73,30 +66,26 @@ class SegnaturaXML:
         descrizione = etree.Element("Descrizione")
 
         protocollo_id = self.protocollo.id
-        attachments = self.irAttachmentObj.search(self.cr, self.uid,
-                                                  [('res_model','=', 'protocollo.protocollo'), ('res_id','=',protocollo_id)])
+        attachments = self.irAttachmentObj.search(self.cr, self.uid, [
+            ('res_model', '=', 'protocollo.protocollo'),
+            ('res_id', '=', protocollo_id)])
 
         docObj = self.protocollo.doc_id
         if docObj and hasattr(docObj, 'name'):
             documento = self.createDocumentoFromIrAttachment(docObj)
             descrizione.append(documento)
-            # attachments.remove(docObj.id)
-
         elif self.protocollo.datas_fname:
             documento = self.createDocumento(self.protocollo.datas_fname)
             descrizione.append(documento)
         else:
             testoDelMessaggio = self.createTestoDelMessaggio()
             descrizione.append(testoDelMessaggio)
-
         if len(attachments) > 1:
             allegati = self.createAllegati(attachments)
             descrizione.append(allegati)
-
         if self.protocollo.notes:
             note = self.createNote()
             descrizione.append(note)
-
         return descrizione
 
     def createNote(self, notes=""):
@@ -109,24 +98,25 @@ class SegnaturaXML:
         return testoDelMessaggio
 
     def createDocumentoFromIrAttachment(self, document):
-        documento = etree.Element("Documento", nome=document.name, tipoRiferimento="MIME")
+        documento = etree.Element("Documento", nome=document.name,
+                                  tipoRiferimento="MIME")
 
         return documento
 
     def createDocumento(self, name):
-        documento = etree.Element("Documento", nome=name, tipoRiferimento="MIME")
+        documento = etree.Element("Documento", nome=name,
+                                  tipoRiferimento="MIME")
 
         return documento
 
     def createAllegati(self, attachments):
         allegati = etree.Element("Allegati")
         for attachment in attachments:
-            attachmentObj = self.irAttachmentObj.browse(self.cr, self.uid, attachment)
+            attachmentObj = self.irAttachmentObj.browse(self.cr, self.uid,
+                                                        attachment)
             if attachmentObj is not None:
                 documento = self.createDocumentoFromIrAttachment(attachmentObj)
                 allegati.append(documento)
-        # fascicolo = self.createFascicolo()
-        # allegati.append(fascicolo)
         return allegati
 
     def createFascicolo(self):
@@ -138,8 +128,6 @@ class SegnaturaXML:
         classifica = self.createClassifica()
         note = self.createNote()
         documento = self.createDocumentoFromIrAttachment(None)
-        # fascicolo = etree.Element("Fascicolo")
-
         fascicolo.append(codiceAmministrazione)
         fascicolo.append(codiceAOO)
         fascicolo.append(oggetto)
@@ -174,10 +162,6 @@ class SegnaturaXML:
             destinazione = self.createDestinazioneIN()
             intestazione.append(destinazione)
 
-            # observers = self.protocollo.assigne_cc
-            # for observer in observers:
-            #     perConoscenza = self.createPerConoscenza(observer)
-            #     intestazione.append(perConoscenza)
         elif self.prot_type == "out":
             origine = self.createOrigineOUT()
             intestazione.append(origine)
@@ -200,7 +184,8 @@ class SegnaturaXML:
 
     def createDestinazioneIN(self):
         destinazione = etree.Element("Destinazione")
-        indirizzoTelematico = self.createIndirizzoTelematicoFromCompany(self.company)
+        indirizzoTelematico = self.createIndirizzoTelematicoFromCompany(
+            self.company)
         destinatario = self.createDestinatarioIN()
 
         destinazione.append(indirizzoTelematico)
@@ -220,11 +205,6 @@ class SegnaturaXML:
 
     def createPerConoscenza(self):
         destinazione = etree.Element("Destinazione")
-        # indirizzoTelematico = self.createIndirizzoTelematico()
-        # destinatario = self.createDestinatario()
-
-        # destinazione.append(indirizzoTelematico)
-        # destinazione.append(destinatario)
         return destinazione
 
     def createDestinatarioIN(self):
@@ -242,29 +222,34 @@ class SegnaturaXML:
             destinatario.append(denominazione)
             persona = self.createPersonaFromSenderReceiver(senderReceiver)
             destinatario.append(persona)
-            indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(senderReceiver)
+            indirizzoTelematico = \
+                self.createIndirizzoTelematicoFromSenderReceiver(
+                    senderReceiver)
             destinatario.append(indirizzoTelematico)
-            indirizzoPostale = self.createIndirizzoPostaleFromSenderReceiver(senderReceiver)
+            indirizzoPostale = self.createIndirizzoPostaleFromSenderReceiver(
+                senderReceiver)
             destinatario.append(indirizzoPostale)
         elif senderReceiver.type == "legal":  # Azienda privata
-            azienda = self.createAmministrazioneFakeFromSenderReceiver(senderReceiver)
+            azienda = self.createAmministrazioneFakeFromSenderReceiver(
+                senderReceiver)
             destinatario.append(azienda)
             aOO = self.createAOO()
             destinatario.append(aOO)
             privato = self.createPrivatoFromSenderReceiver(senderReceiver)
             destinatario.append(privato)
         elif senderReceiver.type == "government":  # Amministrazione pubblica
-            amministrazione = self.createAmministrazioneFromSenderReceiver(senderReceiver)
+            amministrazione = self.createAmministrazioneFromSenderReceiver(
+                senderReceiver)
             destinatario.append(amministrazione)
             aOO = self.createAOO()
             destinatario.append(aOO)
 
         return destinatario
 
-
     def createIdentificatore(self):
         identificatore = etree.Element("Identificatore")
-        # TODO Recuperare da qualche parte il codice amministrazione (codice IPA??)
+        # TODO Recuperare da qualche parte il codice amministrazione (codice
+        #  IPA??)
         codiceAmministrazione = self.createCodiceAmministrazione()
         codiceAOO = self.createCodiceAOO(self.codiceAOO)
         numeroRegistrazione = self.createNumeroRegistrazione(self.prot_number)
@@ -285,25 +270,22 @@ class SegnaturaXML:
         numeroRegistrazione.text = numeroRegistrazioneVal
         return numeroRegistrazione
 
-    def createCodiceAOO(self, codiceAOOVal = ""):
+    def createCodiceAOO(self, codiceAOOVal=""):
         codiceAOO = etree.Element("CodiceAOO")
         codiceAOO.text = codiceAOOVal
         return codiceAOO
 
-    # def createCodiceAmministrazione(self):
-    #     # TODO Recuperare da qualche parte il codice amministrazione (codice IPA??)
-    #     codiceAmministrazione = etree.Element("CodiceAmministrazione")
-    #     return codiceAmministrazione
-
     def createCodiceAmministrazione(self, code=""):
-        # TODO Recuperare da qualche parte il codice amministrazione (codice IPA??)
+        # TODO Recuperare da qualche parte il codice amministrazione (codice
+        #  IPA??)
         codiceAmministrazione = etree.Element("CodiceAmministrazione")
         codiceAmministrazione.text = self.checkNullValue(code)
         return codiceAmministrazione
 
     def createOrigine(self, senderReceiver):
         origine = etree.Element("Origine")
-        indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(senderReceiver)
+        indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(
+            senderReceiver)
         mittente = self.createMittenteIN()
         origine.append(indirizzoTelematico)
         origine.append(mittente)
@@ -377,10 +359,12 @@ class SegnaturaXML:
         senders = self.protocollo.sender_receivers
         for sender in senders:
             if sender.type == "individual":  # Persona fisica
-                persona = self.createAmministrazioneFakeFromSenderReceiver(sender)
+                persona = self.createAmministrazioneFakeFromSenderReceiver(
+                    sender)
                 mittente.append(persona)
             elif sender.type == "legal":  # Azienda privata
-                azienda = self.createAmministrazioneFakeFromSenderReceiver(sender)
+                azienda = self.createAmministrazioneFakeFromSenderReceiver(
+                    sender)
                 mittente.append(azienda)
             elif sender.type == "government":  # Amministrazione pubblica
                 privato = self.createAmministrazioneFromSenderReceiver(sender)
@@ -416,7 +400,8 @@ class SegnaturaXML:
 
         if senderReceiver.type == "legal":
             privato.attrib["tipo"] = "impresa"
-            denominazioneImpresa = self.createDenominazioneImpresa(senderReceiver.name)
+            denominazioneImpresa = self.createDenominazioneImpresa(
+                senderReceiver.name)
             privato.append(denominazioneImpresa)
             partitaIva = etree.Element("PartitaIva")
             privato.append(partitaIva)
@@ -435,9 +420,11 @@ class SegnaturaXML:
         privato.append(cognome)
         codiceFiscale = etree.Element("CodiceFiscale")
         privato.append(codiceFiscale)
-        indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(senderReceiver)
+        indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(
+            senderReceiver)
         privato.append(indirizzoTelematico)
-        indirizzoPostale = self.createIndirizzoPostaleFromSenderReceiver(senderReceiver)
+        indirizzoPostale = self.createIndirizzoPostaleFromSenderReceiver(
+            senderReceiver)
         privato.append(indirizzoPostale)
         telefono = self.createTelefono(senderReceiver)
         privato.append(telefono)
@@ -456,13 +443,10 @@ class SegnaturaXML:
             privato.attrib["tipo"] = "cittadino"
             nome = self.createNome(company)
             privato.append(nome)
-            cognome = etree.Element("Cognome")
-            # privato.append(cognome)
-            codiceFiscale = etree.Element("CodiceFiscale")
-            # privato.append(codiceFiscale)
 
         identificativo = self.createIdentificativo()
-        indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(company)
+        indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(
+            company)
         indirizzoPostale = self.createIndirizzoPostale(company)
         telefono = self.createTelefono(company)
 
@@ -526,9 +510,11 @@ class SegnaturaXML:
     def createAmministrazioneOUT(self):
         amministrazione = etree.Element("Amministrazione")
         denominazione = self.createDenominazione(self.company.name)
-        # TODO Recuperare da qualche parte il codice amministrazione (codice IPA??)
+        # TODO Recuperare da qualche parte il codice amministrazione (codice
+        #  IPA??)
         codiceAmministrazione = self.createCodiceAmministrazione()
-        unitaOrganizzativa = self.createUnitaOrganizzativaFromCompany(self.company)
+        unitaOrganizzativa = self.createUnitaOrganizzativaFromCompany(
+            self.company)
 
         amministrazione.append(denominazione)
         amministrazione.append(codiceAmministrazione)
@@ -539,7 +525,8 @@ class SegnaturaXML:
         amministrazione = etree.Element("Amministrazione")
         denominazione = self.createDenominazione(company.name)
         amministrazione.append(denominazione)
-        codiceAmministrazione = self.createCodiceAmministrazione(company.ammi_code)
+        codiceAmministrazione = self.createCodiceAmministrazione(
+            company.ammi_code)
         amministrazione.append(codiceAmministrazione)
 
         unitaOrganizzativa = self.createUnitaOrganizzativaFromCompany(company)
@@ -552,12 +539,14 @@ class SegnaturaXML:
         denominazione = self.createDenominazione(senderReceiver.name)
         amministrazione.append(denominazione)
 
-        # TODO Recuperare da qualche parte il codice amministrazione (codice IPA??)
+        # TODO Recuperare da qualche parte il codice amministrazione (codice
+        #  IPA??)
         ammi_code = self.checkNullValue(senderReceiver.ammi_code)
         codiceAmministrazione = self.createCodiceAmministrazione(ammi_code)
         amministrazione.append(codiceAmministrazione)
 
-        unitaOrganizzativa = self.createUnitaOrganizzativaFromSenderReceiver(senderReceiver)
+        unitaOrganizzativa = self.createUnitaOrganizzativaFromSenderReceiver(
+            senderReceiver)
         amministrazione.append(unitaOrganizzativa)
 
         return amministrazione
@@ -565,25 +554,31 @@ class SegnaturaXML:
     # Finta amministrazione con i dati del privato per rispettare il DTD
     def createAmministrazioneFakeFromSenderReceiver(self, senderReceiver):
         amministrazione = etree.Element("Amministrazione")
-        denominazione = self.createDenominazione(senderReceiver.name + " (PRIVATO!)")
+        denominazione = self.createDenominazione(
+            senderReceiver.name + " (PRIVATO)")
         amministrazione.append(denominazione)
 
         if senderReceiver.type == 'individual':
             persona = self.createPersonaFromSenderReceiver(senderReceiver)
             amministrazione.append(persona)
 
-        indirizzoPostale = self.createIndirizzoPostaleFromSenderReceiver(senderReceiver)
+        indirizzoPostale = self.createIndirizzoPostaleFromSenderReceiver(
+            senderReceiver)
         amministrazione.append(indirizzoPostale)
-        indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(senderReceiver)
+        indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(
+            senderReceiver)
         amministrazione.append(indirizzoTelematico)
         return amministrazione
 
     def createUnitaOrganizzativaFromSenderReceiver(self, senderReceiver):
-        unitaOrganizzativa = etree.Element("UnitaOrganizzativa", tipo="permanente")
+        unitaOrganizzativa = etree.Element("UnitaOrganizzativa",
+                                           tipo="permanente")
         denominazione = self.createDenominazione(senderReceiver.name)
         # identificativo = self.createIdentificativo()
-        indirizzoPostale = self.createIndirizzoPostaleFromSenderReceiver(senderReceiver)
-        indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(senderReceiver)
+        indirizzoPostale = self.createIndirizzoPostaleFromSenderReceiver(
+            senderReceiver)
+        indirizzoTelematico = self.createIndirizzoTelematicoFromSenderReceiver(
+            senderReceiver)
         telefono = self.createTelefono(senderReceiver)
         fax = etree.Element("Fax")
 
@@ -596,11 +591,12 @@ class SegnaturaXML:
         return unitaOrganizzativa
 
     def createUnitaOrganizzativaFromDepartment(self, department):
-        company = self.company
-        return self.createUnitaOrganizzativaFromCompany(company, department.name)
+        return self.createUnitaOrganizzativaFromCompany(self.company,
+                                                        department.name)
 
     def createUnitaOrganizzativaFromCompany(self, company, name=""):
-        unitaOrganizzativa = etree.Element("UnitaOrganizzativa", tipo="permanente")
+        unitaOrganizzativa = etree.Element("UnitaOrganizzativa",
+                                           tipo="permanente")
         if name == "":
             denominazione = self.createDenominazione(company.name)
         else:
@@ -608,7 +604,8 @@ class SegnaturaXML:
 
         # identificativo = self.createIdentificativo()
         indirizzoPostale = self.createIndirizzoPostaleFromCompany(company)
-        indirizzoTelematico = self.createIndirizzoTelematicoFromCompany(company)
+        indirizzoTelematico = self.createIndirizzoTelematicoFromCompany(
+            company)
         telefono = self.createTelefono(company)
         fax = etree.Element("Fax")
 
