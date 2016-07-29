@@ -38,7 +38,6 @@ class SegnaturaXML:
         else:
             self.codiceAOO = None
 
-        print "ciao"
         pass
 
     def generate_segnatura_root(self):
@@ -47,7 +46,6 @@ class SegnaturaXML:
         descrizione = self.createDescrizione()
         root.append(intestazione)
         root.append(descrizione)
-        print(etree.tostring(root, pretty_print=True))
 
         # return root
         # TODO Ripristinare validazione xml
@@ -541,9 +539,7 @@ class SegnaturaXML:
         amministrazione = etree.Element("Amministrazione")
         denominazione = self.createDenominazione(company.name)
         amministrazione.append(denominazione)
-
-        # TODO SOSTITUIRE IDENT_CODE CON AMMI_CODE UNA VOLTA AGGIUNTO A RES_COMPANY
-        codiceAmministrazione = self.createCodiceAmministrazione(company.ident_code)
+        codiceAmministrazione = self.createCodiceAmministrazione(company.ammi_code)
         amministrazione.append(codiceAmministrazione)
 
         unitaOrganizzativa = self.createUnitaOrganizzativaFromCompany(company)
@@ -633,7 +629,7 @@ class SegnaturaXML:
         cap = self.createCap(senderReceiver.zip)
         comune = self.createComune(senderReceiver.city)
 
-        # TODO recuperare la provincia da qualche parte o modellarla o fottersene
+        # TODO recuperare la provincia da qualche parte o modellarla
         provincia = etree.Element("Provincia")
         nazione = self.createNazione(senderReceiver.country_id)
 
@@ -654,7 +650,7 @@ class SegnaturaXML:
         cap = self.createCap(company.zip)
         comune = self.createComune(company.city)
 
-        # TODO recuperare la provincia da qualche parte o modellarla o fottersene
+        # TODO recuperare la provincia da qualche parte o modellarla
         provincia = etree.Element("Provincia")
         nazione = self.createNazione(company.country_id)
 

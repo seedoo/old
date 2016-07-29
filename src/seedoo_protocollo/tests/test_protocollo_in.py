@@ -11,6 +11,9 @@ from openerp.tools.translate import _
 
 from osv import orm
 import datetime
+from lxml import etree
+import os
+from openerp import tools
 
 
 class TestProtocolloIn(TestProtocolloBase):
@@ -159,6 +162,14 @@ class TestProtocolloIn(TestProtocolloBase):
         self.assertEqual(prot_obj.doc_id.name, prot_name)
         sha1 = self.sha1OfFile(prot_obj.doc_id.id)
         self.assertEqual(prot_obj.fingerprint, sha1)
+        self.assertTrue(prot_obj.xml_signature)
+        path = addons.get_module_resource('seedoo_protocollo',
+                                          'data', "segnatura.dtd")
+        dtdPath = os.path.dirname(path)+ "/segnatura.dtd"
+        dtdfile = open(dtdPath, 'r')
+        dtd = etree.DTD(dtdfile)
+        signature_xml = etree.XML(prot_obj.xml_signature)
+        self.assertTrue(dtd.validate(signature_xml))
 
     def test_1_prot_pec_in(self):
         """Testing received a pec mail and registred """

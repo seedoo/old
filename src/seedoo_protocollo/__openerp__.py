@@ -66,7 +66,6 @@ Configure ir.attachment.location
             'wizard/create_emergency_registry_wizard_view.xml',
             'workflow/protocollo_workflow.xml',
             'data/protocollo_report.xml',
-            'data/segnatura.dtd'
         ],
     'demo': [
         'demo/data.xml',

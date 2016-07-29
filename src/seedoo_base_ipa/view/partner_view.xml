@@ -37,10 +37,9 @@
                            }"/>
                     <field name="parent_pa_id" placeholder=""
                            attrs="{
-                                'invisible': ['|', ('legal_type','!=', 'government'), ('pa_type','not in', ['aoo', 'uo'])],
-                                'required': [('legal_type','=', 'government'), ('pa_type','in', ['aoo', 'uo'])]
+                                'invisible': ['|', ('legal_type','!=', 'government'), ('pa_type','not in', ['aoo', 'uo'])]
                            }"
-                           domain = "[('pa_type','=', super_type)]"
+                           domain = "[('pa_type','!=', False),('pa_type','!=', pa_type),('pa_type','!=', 'uo')]"
                     />
                 </field>
                 <field name="ipa_code" position="attributes">

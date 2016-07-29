@@ -93,7 +93,7 @@ class TestProtocolloBase(test_common.SingleTransactionCase):
 
         # Usefull stuffs
         self.company = self.getDemoObject('base', 'main_company')
-        self.company.write({'ident_code': 'test_proto'})
+        self.company.write({'ammi_code': 'test_ammi_code_proto', 'ident_code': 'test_proto'})
         self.uid = self.getIdDemoObj('', 'protocollo_manager')
         self.admin = 1
         self.modelattachs = self.registry('ir.attachment')

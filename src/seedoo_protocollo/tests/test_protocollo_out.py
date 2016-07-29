@@ -7,6 +7,9 @@ import netsvc
 from openerp.osv.orm import except_orm
 from openerp.addons.seedoo_protocollo.tests.test_protocollo_base \
     import TestProtocolloBase
+from lxml import etree
+import os
+from openerp import tools
 
 
 class TestProtocolloOut(TestProtocolloBase):
@@ -108,6 +111,14 @@ class TestProtocolloOut(TestProtocolloBase):
         self.assertEqual(prot_obj.doc_id.name, prot_name)
         sha1 = self.sha1OfFile(prot_obj.doc_id.id)
         self.assertEqual(prot_obj.fingerprint, sha1)
+        self.assertTrue(prot_obj.xml_signature)
+        path = addons.get_module_resource('seedoo_protocollo',
+                                          'data', "segnatura.dtd")
+        dtdPath = os.path.dirname(path)+ "/segnatura.dtd"
+        dtdfile = open(dtdPath, 'r')
+        dtd = etree.DTD(dtdfile)
+        signature_xml = etree.XML(prot_obj.xml_signature)
+        self.assertTrue(dtd.validate(signature_xml))
 
     def test_1_prot_assigne_out(self):
         """Testing assignee for sent protocol"""
