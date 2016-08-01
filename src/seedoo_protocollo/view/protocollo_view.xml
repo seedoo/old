@@ -397,7 +397,7 @@ this module contains the full copyright notices and license terms. -->
                                 <field name="user_id" invisible="1"/>
                                 <label for="classification" />
                                 <label for="dossier" />
-                                <field name="classification" nolabel="1" />
+                                <field name="classification" nolabel="1" widget="m2o_tree"/>
                                 <field name="dossier" nolabel="1"/>
                               </group>
                             </page>

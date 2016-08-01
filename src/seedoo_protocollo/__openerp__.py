@@ -45,7 +45,8 @@ Configure ir.attachment.location
             'email_template',
             'report_webkit',
             'l10n_it_pec_messages',
-            'seedoo_base_ipa'],
+            'seedoo_base_ipa',
+			'm2o_tree_widget'],
     'data':
         [
             'security/protocollo_security.xml',
@@ -65,8 +66,7 @@ Configure ir.attachment.location
             'wizard/create_journal_wizard_view.xml',
             'wizard/create_emergency_registry_wizard_view.xml',
             'workflow/protocollo_workflow.xml',
-            'data/protocollo_report.xml',
-        ],
+            'data/protocollo_report.xml'],
     'demo': [
         'demo/data.xml',
         'demo/protocollo.classification.csv',
