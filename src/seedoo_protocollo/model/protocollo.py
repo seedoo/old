@@ -21,7 +21,7 @@ import datetime
 import time
 import logging
 
-from seedoo_protocollo.segnatura.segnatura_xml import SegnaturaXML
+from ..segnatura.segnatura_xml import SegnaturaXML
 
 _logger = logging.getLogger(__name__)
 mimetypes.init()
