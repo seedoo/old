@@ -44,7 +44,8 @@ Configure ir.attachment.location
             'hr',
             'email_template',
             'report_webkit',
-            'l10n_it_pec_messages'],
+            'l10n_it_pec_messages',
+            'm2o_tree_widget'],
     'data':
         [
             'security/protocollo_security.xml',
