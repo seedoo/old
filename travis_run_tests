@@ -9,5 +9,7 @@ bin/start_odoo -d seedoo_test -i l10n_it_fatturapa_in --stop-after-init
 bin/start_odoo -d seedoo_test -u l10n_it_fatturapa_in --test-enable --log-level=test --stop-after-init
 bin/start_odoo -d seedoo_test -i l10n_it_fatturapa_in_notifications --stop-after-init
 bin/start_odoo -d seedoo_test -u l10n_it_fatturapa_in_notifications --test-enable --log-level=test --stop-after-init
+bin/start_odoo -d seedoo_test -i seedoo_gedoc --stop-after-init
+bin/start_odoo -d seedoo_test -u seedoo_gedoc --test-enable --log-level=test --stop-after-init
 bin/start_odoo -d seedoo_test -i seedoo_protocollo --stop-after-init
 bin/start_odoo -d seedoo_test -u seedoo_protocollo --test-enable --log-level=test --stop-after-init
