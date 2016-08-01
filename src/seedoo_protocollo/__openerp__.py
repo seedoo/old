@@ -45,7 +45,8 @@ Configure ir.attachment.location
             'email_template',
             'report_webkit',
             'seedoo_gedoc',
-            'l10n_it_pec_messages'],
+            'l10n_it_pec_messages',
+            'm2o_tree_widget'],
     'data':
         [
             'security/protocollo_security.xml',
