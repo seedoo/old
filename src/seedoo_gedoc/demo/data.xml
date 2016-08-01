@@ -18,26 +18,24 @@ this module contains the full copyright notices and license terms. -->
 
         <record model="hr.department" id="generic_dept">
             <field name="name">Generic Gedoc Dept</field>
-            <field name="manager_id"  ref="gedoc_user" />
         </record>
-
-        <record model="hr.department" id="generic_dept2">
-            <field name="name">Generic Gedoc Dept 2</field>
-            <field name="manager_id"  ref="gedoc_user" />
-            <field name="parent_id"  ref="generic_dept" />
-        </record>
-
-        <record model="hr.department" id="generic_dept3">
-            <field name="name">Generic Gedoc Dept 3</field>
-            <field name="manager_id"  ref="gedoc_user" />
-            <field name="parent_id"  ref="generic_dept" />
-        </record>       
-        
 
         <record model="hr.employee" id="hr_gedoc_user">
             <field name="name">Gedoc User</field>
             <field name="user_id"  ref="gedoc_user" />
             <field name="department_id"  ref="generic_dept" />
+        </record>
+
+        <record model="hr.department" id="generic_dept2">
+            <field name="name">Generic Gedoc Dept 2</field>
+            <field name="manager_id"  ref="hr_gedoc_user" />
+            <field name="parent_id"  ref="generic_dept" />
+        </record>
+
+        <record model="hr.department" id="generic_dept3">
+            <field name="name">Generic Gedoc Dept 3</field>
+            <field name="manager_id"  ref="hr_gedoc_user" />
+            <field name="parent_id"  ref="generic_dept" />
         </record>
 
         <record model="res.users" id="gedoc_user_modifier">

@@ -47,7 +47,7 @@ Configure ir.attachment.location
             'seedoo_gedoc',
             'l10n_it_pec_messages',
             'seedoo_base_ipa',
-			'm2o_tree_widget'],
+            'm2o_tree_widget'],
     'data':
         [
             'security/protocollo_security.xml',
