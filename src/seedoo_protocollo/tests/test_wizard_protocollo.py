@@ -73,7 +73,8 @@ class TestWizardProtocolloOut(TestProtocolloBase):
         cr, uid = self.cr, self.uid
         partner_id = self.getIdDemoObj('base', 'main_partner')
         racc_id = self.getIdDemoObj('', 'protocollo_typology_rac')
-        com_varie_id = self.getIdDemoObj('', 'protocollo_classification_6')
+        com_varie_id = self.getIdDemoObj(
+            'seedoo_gedoc', 'protocollo_classification_6')
         send_rec_id = self.modelProtSendRec.create(
             cr, uid,
             {

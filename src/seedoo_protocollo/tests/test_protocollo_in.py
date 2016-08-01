@@ -4,6 +4,7 @@
 
 from openerp import addons
 import netsvc
+from openerp.osv import fields
 from openerp.osv.orm import except_orm
 from openerp.addons.seedoo_protocollo.tests.test_protocollo_base \
     import TestProtocolloBase
@@ -45,7 +46,7 @@ class TestProtocolloIn(TestProtocolloBase):
         cr, uid = self.cr, self.uid
         partner_id = self.getIdDemoObj('base', 'main_partner')
         racc_id = self.getIdDemoObj('', 'protocollo_typology_rac')
-        com_varie_id = self.getIdDemoObj('', 'protocollo_classification_6')
+        com_varie_id = self.getIdDemoObj('seedoo_gedoc', 'protocollo_classification_6')
         send_rec_id = self.modelProtSendRec.create(
             cr, uid,
             {
@@ -84,7 +85,8 @@ class TestProtocolloIn(TestProtocolloBase):
         """Testing received a pec mail and registred """
         cr, uid = self.cr, self.uid
         self.receivePec()
-        com_varie_id = self.getIdDemoObj('', 'protocollo_classification_6')
+        com_varie_id = self.getIdDemoObj(
+            'seedoo_gedoc', 'protocollo_classification_6')
         context = {'pec_messages': True}
         pec_todo = self.message_model.search(
             cr, uid,
@@ -150,7 +152,7 @@ class TestProtocolloIn(TestProtocolloBase):
     def test_4_delete_prot_pdf_in(self):
         cr, uid = self.cr, self.uid
         racc_id = self.getIdDemoObj('', 'protocollo_typology_rac')
-        com_varie_id = self.getIdDemoObj('', 'protocollo_classification_6')
+        com_varie_id = self.getIdDemoObj('seedoo_gedoc', 'protocollo_classification_6')
         send_rec_id = self.modelProtSendRec.search(
             cr, uid, [('name', '=', 'test_partner')])[0]
         prot_id = self.modelProtocollo.create(
@@ -180,7 +182,8 @@ class TestProtocolloIn(TestProtocolloBase):
         cr, uid = self.cr, self.uid
         partner_id = self.getIdDemoObj('base', 'main_partner')
         racc_id = self.getIdDemoObj('', 'protocollo_typology_rac')
-        com_varie_id = self.getIdDemoObj('', 'protocollo_classification_6')
+        com_varie_id = self.getIdDemoObj(
+            'seedoo_gedoc', 'protocollo_classification_6')
         send_rec_id = self.modelProtSendRec.create(
             cr, uid,
             {
@@ -218,3 +221,96 @@ class TestProtocolloIn(TestProtocolloBase):
                 )
         # questo test diretto dell'azione register del protocollo non
         # compromette i test successivi in quanto e' l'ultimo del modulo
+
+    def test_6_document_search(self):
+        """
+            Test Gedoc Extension
+        """
+        cr, uid = self.cr, self.uid
+        context = {
+            'lang': 'en_US',
+            'tz': False,
+            'uid': uid,
+            }
+        classification_id = self.getIdDemoObj(
+            'seedoo_gedoc', 'protocollo_classification_8')
+        res = self.modeldossier.on_change_dossier_type_classification(
+            cr, uid, [],
+            'fascicolo',
+            classification_id,
+            False
+        )
+        dossier_id = self.modeldossier.create(
+            cr, uid,
+            {
+                'name': res['value']['name'],
+                'description': 'test dossier',
+                'classification_id': classification_id,
+                'user_id': uid,
+                'paperless': True
+             },
+            context=context
+        )
+        dossier = self.modeldossier.browse(
+            cr, uid, dossier_id)
+        dossier.refresh()
+        self.assertTrue(dossier.state, 'draft')
+        prot_id = self.modelProtocollo.search(
+            cr, uid, [('name', '=', '0000001')]
+        )[0]
+        # is set to notified
+        self.modelProtocollo.write(
+            cr, uid, prot_id,
+            {
+                'dossier_ids': [(6, 0, [dossier_id])],
+            }
+        )
+        self.assertTrue(dossier.state, 'open')
+        # Search Docs
+        doc_search_id = self.modeldocsearch.create(
+            cr,
+            uid,
+            {
+                'name': 'protocollo.protocollo',
+                'dossier_id': dossier_id
+             },
+            context=context
+        )
+        res = self.modeldocsearch.search_action(
+            cr, uid, [doc_search_id], context=context)
+        self.assertEqual(
+            res['domain'],
+            "[('id', 'in', (%s,))]" % prot_id
+        )
+        self.modeldocsearch.write(
+            cr,
+            uid,
+            doc_search_id,
+            {
+                'classification_id': classification_id
+             },
+            context=context
+        )
+        res = self.modeldocsearch.search_action(
+            cr, uid, [doc_search_id], context=context)
+        self.assertNotEqual(
+            res['domain'],
+            "[('id', 'in', (%s,))]" % prot_id
+        )
+        classification2_id = self.getIdDemoObj(
+            'seedoo_gedoc', 'protocollo_classification_6')
+        self.modeldocsearch.write(
+            cr,
+            uid,
+            doc_search_id,
+            {
+                'classification_id': classification2_id
+             },
+            context=context
+        )
+        res = self.modeldocsearch.search_action(
+            cr, uid, [doc_search_id], context=context)
+        self.assertEqual(
+            res['domain'],
+            "[('id', 'in', (%s,))]" % prot_id
+        )
