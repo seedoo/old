@@ -93,8 +93,11 @@ class wizard(osv.TransientModel):
             'Mittenti/Destinatari',
             required=True,
             limit=1),
-        'dossier': fields.many2one('protocollo.dossier', 'Fascicolo',
-                                   required=False,),
+        'dossier_ids': fields.many2many(
+            'protocollo.dossier',
+            'dossier_protocollo_pec_rel',
+            'wizard_id', 'dossier_id',
+            'Fascicoli'),
         # TODO: insert assigne here
         'notes': fields.text('Note'),
     }
@@ -186,7 +189,7 @@ class wizard(osv.TransientModel):
         vals['subject'] = wizard.subject
         vals['body'] = wizard.body
         vals['classification'] = wizard.classification.id
-        vals['dossier'] = wizard.dossier.id
+        vals['dossier_ids'] = [[6, 0, [d.id for d in wizard.dossier_ids]]]
         vals['notes'] = wizard.notes
         vals['mail_pec_ref'] = context['active_id']
         vals['user_id'] = uid

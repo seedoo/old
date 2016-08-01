@@ -100,6 +100,8 @@ class TestProtocolloBase(test_common.SingleTransactionCase):
         self.modelProtocollo = self.registry('protocollo.protocollo')
         self.modelProtRegistry = self.registry('protocollo.registry')
         self.modelProtSendRec = self.registry('protocollo.sender_receiver')
+        self.modeldossier = self.registry('protocollo.dossier')
+        self.modeldocsearch = self.registry('gedoc.document.search')
         self.modelHrDepartmentCollaborator = \
             self.registry('hr.department.collaborator')
         self.thread_model = self.registry('mail.thread')

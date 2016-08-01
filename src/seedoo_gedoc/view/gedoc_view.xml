@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+    <!-- Disable Know How -->
+    
+    <record id="knowledge.menu_document" model="ir.ui.menu">
+    	<field name="groups_id" eval="[(6,0,[ref('base.group_system')])]" />
+    </record>
+
+    <!-- Main Menu -->
+    
+        <menuitem name="Gestione Documentale" id="menu_root_gedoc" sequence="10" groups="group_gedoc_user"/>
+        <menuitem name="Gestione Documentale" parent="menu_root_gedoc" id="main_menu_gedoc" sequence="10" groups="group_gedoc_user"/>
+        <menuitem name="Configurazioni" parent="menu_root_gedoc" id="gedoc_configuration" sequence="30" groups="group_gedoc_manager"/>
+
+	<!-- Classification -->
+	
+        <record model='ir.ui.view' id='protocollo_classification_form'>
+            <field name="name">protocollo.classification.form</field>
+            <field name="model">protocollo.classification</field>
+            <field name="arch" type="xml">
+                <form string="Titolario">
+                    <field name="class_type" />
+                    <newline/>
+                    <field name="name" />
+                    <field name="code" />
+                	<field name="complete_name" />
+                    <field name="parent_id" />
+                    <field name="description" colspan="4"/>
+                    <field name="assigne" colspan="4"/>
+                    <field name="dossier_ids" colspan="4"/>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_classification_tree'>
+            <field name="name">protocollo.classification.tree</field>
+            <field name="model">protocollo.classification</field>
+            <field name="field_parent">child_ids</field>
+            <field name="arch" type="xml">
+                <tree string="Titolario">
+                    <field name="class_type" />
+                    <field name="name" />
+                    <field name="parent_id" invisible="1"/>
+                    <field name="code" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_classification_search'>
+            <field name="name">protocollo.classification.search</field>
+            <field name="model">protocollo.classification</field>
+            <field name="arch" type="xml">
+                <search string="Titolario" >
+                    <field name="class_type" />
+                    <field name="name" />
+                    <field name="parent_id" />
+                    <field name="code" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_classification_act'>
+            <field name="name">Titolario</field>
+            <field name="res_model">protocollo.classification</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+        
+        <menuitem action="protocollo_classification_act" parent="gedoc_configuration" id="protocollo_classification_menu" groups="group_gedoc_manager" sequence="10"/>
+
+	<!-- Dossier -->
+	
+        <record model='ir.ui.view' id='protocollo_dossier_form'>
+            <field name="name">protocollo.dossier.form</field>
+            <field name="model">protocollo.dossier</field>
+            <field name="arch" type="xml">
+                <form string="Fascicolo" version="7.0">
+                   <header>
+                    	<div>
+		                    <button name="open" states="draft" string="Apri Fascicolo" />
+		                    <button name="close" states="open" string="Chiudi Fascicolo" />
+	                    </div>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,open,closed" statusbar_colors='{"open":"blue","closed":"green"}'/>
+                	</header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" class="oe_inline" />
+                            </h1>
+                            <label for="description" class="oe_edit_only"/>
+                            <h1>
+                                <field name="description" class="oe_inline" />
+                            </h1>
+                            <label for="date_open" class="oe_edit_only"/>
+                            <h2>
+                                <field name="date_open" />
+                            </h2>
+                            <label for="date_close" class="oe_edit_only"/>
+                            <h2>
+                                <field name="date_close" />
+                            </h2>
+                            <label for="classification_id" class="oe_edit_only"/>
+                            <h2>
+                                <field name="classification_id" on_change="on_change_dossier_type_classification(dossier_type, classification_id, parent_id)" />
+                            </h2>
+                            <label for="dossier_type" class="oe_edit_only"/>
+                            <h2>
+                            <field name="dossier_type" on_change="on_change_dossier_type_classification(dossier_type, classification_id, parent_id)" />
+                            </h2>
+                            <label for="dossier_typology" class="oe_edit_only"/>
+                            <h2>
+                            <field name="dossier_typology"/>
+                            </h2>
+                        </div>
+                        <group col="4" string="Informazioni Generali">
+                    		<field name="paperless" />
+                    		<newline/>
+                    		<field name="year" />
+                    		<newline/>
+                    		<field name="parent_id" on_change="on_change_dossier_type_classification(dossier_type, classification_id, parent_id)" domain ="[('dossier_type', '=', parent_type)]" attrs="{'invisible':[('dossier_type','=','fascicolo')], 'required': [('dossier_type','in',('sottofascicolo', 'inserto'))]}" />
+                    		
+                            <field name="parent_type" invisible="1" />
+                    		<newline/>
+                    		<field name="child_ids" attrs="{'invisible':[('dossier_type','=','inserto')]}" />
+                    		
+                    		<field name="partner_id" attrs="{'invisible':[('dossier_typology','not in ',('fisica', 'giuridica'))]}" />
+	                    </group>
+	                    <notebook>
+	                    	<page string="Documenti">
+                        	<group col="4">
+                    			<field name="document_ids" domain="['|',('user_id','=',uid),('office_comp_ids.group_ids.users.id','in',[uid])]"/>
+                        	</group>
+                    		</page>
+	                    	<page string="Attori Coinvolti">
+                        	<group col="4" attrs="{'invisible':[('dossier_typology','!=','procedimento')]}">
+                    			<field name="user_id" />
+                    			<field name="owner_partner_id" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                    			<field name="participant_partner_ids" />
+	                    	</group>
+	                    	</page>
+	                    	<page string="Permessi Fascicolo">
+                        	<group col="4">
+                        	<group col="2">
+                    			<field name="office_comp_ids" />
+                    			<field name="user_comp_ids" />
+                        	</group>
+                        	<group col="2">
+                    			<field name="office_view_ids" />
+                    			<field name="user_view_ids" />
+	                    	</group>
+                    	</group>
+                    	</page>
+	                    	<page string="Posizione Fisica Fascicolo" attrs="{'invisible':[('paperless','=',True)]}">
+                        	<group col="4">
+                    			<field name="address" />
+                    			<field name="building" />
+                    			<field name="floor" />
+                    			<field name="room" />
+	                    	</group>
+                    	</page>
+	                   </notebook>
+                    <label for="notes" />
+                    <field name="notes" />
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_dossier_tree'>
+            <field name="name">protocollo.dossier.tree</field>
+            <field name="model">protocollo.dossier</field>
+            <field name="arch" type="xml">
+                <tree string="Fascicolo" version="7.0" colors="blue:state=='open';green:state=='closed';grey:state=='draft'">
+                    <field name="name" />
+                    <field name="description" />
+                    <field name="classification_id" />
+                    <field name="year" />
+                    <field name="dossier_type" />
+                    <field name="dossier_typology" />
+                    <field name="date_open" />
+                    <field name="date_close" />
+                    <field name="user_id" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='protocollo_dossier_search'>
+            <field name="name">protocollo.dossier.search</field>
+            <field name="model">protocollo.dossier</field>
+            <field name="arch" type="xml">
+                <search string="Fascicolo" >
+                    <field name="name" />
+                    <field name="description" />
+                    <field name="classification_id" />
+                    <field name="year" />
+                    <field name="dossier_type" />
+                    <field name="dossier_typology" />
+                    <field name="date_open" />
+                    <field name="date_close" />
+                    <field name="user_id" />
+                    <field name="state" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='protocollo_dossier_act'>
+            <field name="name">Tutti i Fascicoli</field>
+            <field name="res_model">protocollo.dossier</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+        
+        <menuitem action="protocollo_dossier_act" parent="main_menu_gedoc" id="protocollo_dossier_menu" groups="group_gedoc_user" sequence="20"/>
+
+        <record model='ir.actions.act_window' id='protocollo_my_dossier_act'>
+            <field name="name">Miei Fascicoli</field>
+            <field name="res_model">protocollo.dossier</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('user_id','=',uid)]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+        
+        <menuitem action="protocollo_my_dossier_act" parent="protocollo_dossier_menu" id="protocollo_my_dossier_menu" groups="group_gedoc_user" sequence="10"/>
+
+        <record model='ir.actions.act_window' id='protocollo_comp_dossier_act'>
+            <field name="name">Per Competenza</field>
+            <field name="res_model">protocollo.dossier</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">['|', ('office_comp_ids.group_ids.users','in',[uid]), ('user_comp_ids', 'in', uid)]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+        
+        <menuitem action="protocollo_comp_dossier_act" parent="protocollo_dossier_menu" id="protocollo_comp_dossier_menu" groups="group_gedoc_user" sequence="10"/>
+
+        <record model='ir.actions.act_window' id='protocollo_view_dossier_act'>
+            <field name="name">Per Conoscenza</field>
+            <field name="res_model">protocollo.dossier</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">['|', ('office_view_ids.group_ids.users','in',[uid]), ('user_view_ids', 'in', uid)]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+        
+        <menuitem action="protocollo_view_dossier_act" parent="protocollo_dossier_menu" id="protocollo_view_dossier_menu" groups="group_gedoc_user" sequence="10"/>
+
+	<!-- Dossier to Documents -->
+	
+    <act_window
+        domain="[('dossier_ids', 'in', [active_id])]"
+        context="{'default_dossier_ids': active_id}"
+        id="zoom_dossier_document" name="Documenti Collegati"
+        res_model="gedoc.document"
+        src_model="protocollo.dossier"/>
+
+	<!-- Dossier By Classification -->
+
+    <record model="ir.actions.act_window" id="action_dossier_classification_tree">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Fascicoli da Titolario</field>
+        <field name="res_model">protocollo.classification</field>
+        <field name="view_type">tree</field>
+        <field name="view_id" ref="protocollo_classification_tree"/>
+        <field name="domain">[('parent_id','=',False)]</field>
+    </record>
+
+    <menuitem
+        action="action_dossier_classification_tree"
+        id="menu_dossier_classification_tree"
+        parent="main_menu_gedoc" sequence="30"/>
+
+    <record model="ir.actions.act_window" id="action_dossier_classification_form">
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">protocollo.dossier</field>
+        <field name="name">Titolario</field>
+        <field name="view_type">form</field>
+        <field name="domain">[('classification_id','child_of',active_id)]</field>
+        <field name="context">{'classification_id':active_id}</field>
+    </record>
+
+    <record model="ir.values" id="ir_action_dossier_classification_form">
+        <field name="key2" eval="'tree_but_open'"/>
+        <field name="model" eval="'protocollo.classification'"/>
+        <field name="name">Naviga Fascicoli</field>
+        <field name="value" eval="'ir.actions.act_window,%d'%action_dossier_classification_form"/>
+    </record>
+
+	<!-- Documents -->
+
+	<!-- Document Model Type -->
+	
+        <record model='ir.ui.view' id='gedoc_model_type_form'>
+            <field name="name">gedoc.model.type.form</field>
+            <field name="model">gedoc.model.type</field>
+            <field name="arch" type="xml">
+                <form string="Tipo Documento">
+                    <field name="name" />
+                    <field name="description" />
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='gedoc_model_type_tree'>
+            <field name="name">gedoc.model.type.tree</field>
+            <field name="model">gedoc.model.type</field>
+            <field name="arch" type="xml">
+                <tree string="Tipo Documento">
+                    <field name="name" />
+                    <field name="description" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='gedoc_model_type_search'>
+            <field name="name">gedoc.model.type.search</field>
+            <field name="model">gedoc.model.type</field>
+            <field name="arch" type="xml">
+                <search string="Tipo Documento" >
+                    <field name="name" />
+                    <field name="description" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='gedoc_model_type_act'>
+            <field name="name">Tipo Modello Documento</field>
+            <field name="res_model">gedoc.model.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+        
+        <menuitem action="gedoc_model_type_act" parent="gedoc_configuration" id="gedoc_model_type_menu" groups="group_gedoc_manager" sequence="15"/>
+	
+	<!-- Document Type -->
+	
+        <record model='ir.ui.view' id='gedoc_document_type_form'>
+            <field name="name">gedoc.document.type.form</field>
+            <field name="model">gedoc.document.type</field>
+            <field name="arch" type="xml">
+                <form string="Tipo Documento">
+                    <field name="name" />
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='gedoc_document_type_tree'>
+            <field name="name">gedoc.document.type.tree</field>
+            <field name="model">gedoc.document.type</field>
+            <field name="arch" type="xml">
+                <tree string="Tipo Documento">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='gedoc_document_type_search'>
+            <field name="name">gedoc.document.type.search</field>
+            <field name="model">gedoc.document.type</field>
+            <field name="arch" type="xml">
+                <search string="Tipo Documento" >
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='gedoc_document_type_act'>
+            <field name="name">Tipo Documento</field>
+            <field name="res_model">gedoc.document.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+        
+        <menuitem action="gedoc_document_type_act" parent="gedoc_configuration" id="gedoc_document_type_menu" groups="group_gedoc_manager" sequence="20"/>
+
+	
+    <menuitem name="Documenti" parent="menu_root_gedoc" id="gedoc_document_menu" groups="group_gedoc_user" sequence="20"/>
+
+	<!-- Administrative Document -->
+
+        <record model='ir.ui.view' id='gedoc_document_form'>
+            <field name="name">gedoc.document.form</field>
+            <field name="model">gedoc.document</field>
+            <field name="arch" type="xml">
+                <form string="Documento" version="7.0">
+                   <header>
+                    	<div>
+		                    <button name="%(gedoc_upload_doc_wizard_action)d" type='action' string='Carica Documento' attrs="{'invisible': [('main_doc_id','!=',False)]}" groups="seedoo_gedoc.group_gedoc_user"/>
+		                </div>
+		           </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" class="oe_inline" />
+                            </h1>
+                            <label for="document_type" class="oe_edit_only"/>
+                            <h2>
+                                <field name="document_type" class="oe_inline" />
+                            </h2>
+                            <label for="subject" class="oe_edit_only"/>
+                            <h2>
+                                <field name="subject" class="oe_inline" />
+                            </h2>
+                        </div>
+                        <group col="4" string="Informazioni Generali">
+                    		<field name="user_id" />
+                    		<newline/>
+                    		<field name="main_doc_id" />
+                    		<newline/>
+                    		<field name="data_doc" />
+	                    </group>
+	                    <notebook>
+	                    	<page string="Fascicoli">
+                    			<field name="dossier_ids" />
+	                    	</page>
+	                    	<page string="Permessi Documento">
+                        	<group col="4">
+                        	<group col="2">
+                    			<field name="office_comp_ids" />
+                    			<field name="user_comp_ids" />
+                        	</group>
+                        	<group col="2">
+                    			<field name="office_view_ids" />
+                    			<field name="user_view_ids" />
+	                    	</group>
+                    	</group>
+                    	</page>
+                    </notebook>
+                  </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='gedoc_document_tree'>
+            <field name="name">gedoc.document.tree</field>
+            <field name="model">gedoc.document</field>
+            <field name="arch" type="xml">
+                <tree string="Documento">
+                    <field name="document_type"/>
+                    <field name="name" />
+                    <field name="user_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='gedoc_document_search'>
+            <field name="name">gedoc.document.search</field>
+            <field name="model">gedoc.document</field>
+            <field name="arch" type="xml">
+                <search string="Documento" >
+                    <field name="document_type"/>
+                    <field name="name" />
+                    <field name="user_id" />
+                    <field name="dossier_ids" />
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='gedoc_document_act'>
+            <field name="name">Altri Documenti</field>
+            <field name="res_model">gedoc.document</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Premi qui per creare un nuovo record
+              </p><p>
+                Ricordati di inserire tutti i campi in celeste!
+              </p>
+            </field>
+        </record>
+        
+        <menuitem action="gedoc_document_act" parent="gedoc_document_menu" id="gedoc_admin_document_menu" groups="group_gedoc_user" sequence="30"/>
+
+		<!-- Search Documents -->
+		
+        <record model='ir.ui.view' id='gedoc_document_search_form'>
+            <field name="name">gedoc.document.search.form</field>
+            <field name="model">gedoc.document.search</field>
+            <field name="arch" type="xml">
+                <form string="Ricerca Documenti" version="7.0">
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <label for="text_name" />
+                    <field name="text_name"/>
+                    <label for="subject" />
+                    <field name="subject"/>
+                    <label for="dossier_id" />
+                    <field name="dossier_id" />
+                    <label for="classification_id" />
+                    <field name="classification_id" />
+                    <label for="partner_id" />
+                    <field name="partner_id" />
+                    <label for="user_id" />
+                    <field name="user_id" />
+                    <label for="office_id" attr="{'invisible': [('name', '=', 'gedoc.document')]}"/>
+                    <field name="office_id" attr="{'invisible': [('name', '=', 'gedoc.document')]}"/>
+                    <separator string="Inserisci parti del contenuto del documento" />
+                    <group>
+                        <field name="index_content" nolabel="1"/>
+                    </group>
+                    <separator string="Inserisci intervallo di date del documento" />
+                    <group>
+                        <field name="date_close_start" />
+                        <field name="date_close_end" />
+                    </group>
+                    <footer>
+                        <button string="Cerca" name="search_action" type="object" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="gedoc_document_search_action" model="ir.actions.act_window">
+            <field name="name">Ricerca Documenti</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gedoc.document.search</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="groups_id" eval="[(4, ref('base.group_user'))]" />
+            <field name="view_id" ref="gedoc_document_search_form"/>
+        </record>
+
+        <menuitem action="gedoc_document_search_action" parent="gedoc_document_menu" id="gedoc_search_document_menu" groups="group_gedoc_user" sequence="40"/>
+
+    </data>
+</openerp>

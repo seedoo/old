@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <!-- Model Typology -->
+
+    	<record id="gedoc_document_type1" model="gedoc.model.type">
+            <field name="name">gedoc.document</field>
+            <field name="description">Documenti</field>
+        </record>
+        
+        <!-- Document Typology -->
+
+    	<record id="gedoc_document_type_contract" model="gedoc.document.type">
+            <field name="name">Contratto</field>
+        </record>
+
+    	<record id="gedoc_document_type_cv" model="gedoc.document.type">
+            <field name="name">Curriculum Vitae</field>
+        </record>
+
+    	<record id="gedoc_document_type_project" model="gedoc.document.type">
+            <field name="name">Progetto</field>
+        </record>
+    
+    </data>
+</openerp>

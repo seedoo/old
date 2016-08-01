@@ -50,10 +50,14 @@ this module contains the full copyright notices and license terms. -->
 	                    <notebook>
 	                    	<page string="Classificazioni">
 	                    	  <group col="4">
-	                    		<label for="classification" />
-	                    		<label for="dossier" />
-		                    	<field name="classification" nolabel="1"/>
-		                    	<field name="dossier" nolabel="1"/>
+	                    	  	<group>
+		                    		<label for="classification" />
+			                    	<field name="classification" nolabel="1"/>
+		                    	</group>
+		                    	<group>
+		                    		<label for="dossier_ids" />
+			                    	<field name="dossier_ids" nolabel="1" domain="[('state','=','open')]"/>
+		                    	</group>
 		                      </group>
 	                    	</page>
 	                    </notebook>
