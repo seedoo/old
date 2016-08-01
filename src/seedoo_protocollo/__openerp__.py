@@ -46,6 +46,7 @@ Configure ir.attachment.location
             'report_webkit',
             'seedoo_gedoc',
             'l10n_it_pec_messages',
+            'seedoo_base_ipa',
             'm2o_tree_widget'],
     'data':
         [

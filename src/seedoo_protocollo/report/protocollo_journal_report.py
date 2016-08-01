@@ -18,7 +18,3 @@ class ProtocolloJournalReport(report_sxw.rml_parse):
             'time': time
             })
 
-report_sxw.report_sxw('report.protocollo.journal.webkit',
-                      'protocollo.journal',
-                      'addons/protocollo/report/protocollo_journal.mako',
-                      parser=ProtocolloJournalReport)

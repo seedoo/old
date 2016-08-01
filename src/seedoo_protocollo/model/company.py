@@ -12,10 +12,15 @@ class res_company(osv.Model):
     #      che l' AOO, per cui attualmente il protocollo lo si può
     #      utilizzare solo quando la AOO è unica!
     _columns = {
+        'ammi_code': fields.char(
+            'Codice Identificativo Amministrazione',
+            size=256,
+            required=False),
         'ident_code': fields.char(
             'Codice Identificativo Area',
             size=256,
             required=False),
+
         'reserved_user_id': fields.many2one(
             'res.users',
             'Resposabile Dati Sensibili'
