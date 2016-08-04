@@ -47,7 +47,6 @@ this module contains the full copyright notices and license terms. -->
         <field name="inherit_id" ref="hr.view_department_tree"></field>
         <field name="arch" type="xml">
             <tree string="Companies">
-                <field name="complete_name"/>
                 <field name="description"/>
             </tree>
         </field>

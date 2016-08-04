@@ -86,80 +86,61 @@
                 <form string="Fascicolo" version="7.0">
                    <header>
                     	<div>
-		                    <button name="open" states="draft" string="Apri Fascicolo" />
-		                    <button name="close" states="open" string="Chiudi Fascicolo" />
+		                    <button name="open" states="draft" string="Apri Fascicolo" class="oe_highlight_positive"/>
+		                    <button name="close" states="open" string="Chiudi Fascicolo" class="oe_highlight_warning"/>
 	                    </div>
                         <field name="state" widget="statusbar" statusbar_visible="draft,open,closed" statusbar_colors='{"open":"blue","closed":"green"}'/>
                 	</header>
                     <sheet>
-                        <div class="oe_title">
-                            <label for="name" class="oe_edit_only"/>
-                            <h1>
-                                <field name="name" class="oe_inline" />
-                            </h1>
-                            <label for="description" class="oe_edit_only"/>
-                            <h1>
-                                <field name="description" class="oe_inline" />
-                            </h1>
-                            <label for="date_open" class="oe_edit_only"/>
-                            <h2>
+                        <div class="gedoc_header">
+                        <group col="4">
+                                    <field name="name" class="oe_inline" />
+                                    <field name="description" class="oe_inline" />
+                                <field name="dossier_type" on_change="on_change_dossier_type_classification(dossier_type, classification_id, parent_id)" />
                                 <field name="date_open" />
-                            </h2>
-                            <label for="date_close" class="oe_edit_only"/>
-                            <h2>
+                                <field name="dossier_typology"/>
                                 <field name="date_close" />
-                            </h2>
-                            <label for="classification_id" class="oe_edit_only"/>
-                            <h2>
                                 <field name="classification_id" on_change="on_change_dossier_type_classification(dossier_type, classification_id, parent_id)" />
-                            </h2>
-                            <label for="dossier_type" class="oe_edit_only"/>
-                            <h2>
-                            <field name="dossier_type" on_change="on_change_dossier_type_classification(dossier_type, classification_id, parent_id)" />
-                            </h2>
-                            <label for="dossier_typology" class="oe_edit_only"/>
-                            <h2>
-                            <field name="dossier_typology"/>
-                            </h2>
+                            </group>
                         </div>
-                        <group col="4" string="Informazioni Generali">
-                    		<field name="paperless" />
+                        <group col="8" string="Informazioni Generali">
+                    		<field name="user_id" />
+                            <field name="owner_partner_id" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
                     		<newline/>
-                    		<field name="year" />
-                    		<newline/>
+                            <field name="year" />
+                            <field name="paperless" />
+                            <newline/>
                     		<field name="parent_id" on_change="on_change_dossier_type_classification(dossier_type, classification_id, parent_id)" domain ="[('dossier_type', '=', parent_type)]" attrs="{'invisible':[('dossier_type','=','fascicolo')], 'required': [('dossier_type','in',('sottofascicolo', 'inserto'))]}" />
-                    		
                             <field name="parent_type" invisible="1" />
                     		<newline/>
-                    		<field name="child_ids" attrs="{'invisible':[('dossier_type','=','inserto')]}" />
-                    		
                     		<field name="partner_id" attrs="{'invisible':[('dossier_typology','not in ',('fisica', 'giuridica'))]}" />
 	                    </group>
 	                    <notebook>
-	                    	<page string="Documenti">
-                        	<group col="4">
-                    			<field name="document_ids" domain="['|',('user_id','=',uid),('office_comp_ids.group_ids.users.id','in',[uid])]"/>
-                        	</group>
-                    		</page>
-	                    	<page string="Attori Coinvolti">
-                        	<group col="4" attrs="{'invisible':[('dossier_typology','!=','procedimento')]}">
-                    			<field name="user_id" />
-                    			<field name="owner_partner_id" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
-                    			<field name="participant_partner_ids" />
-	                    	</group>
-	                    	</page>
-	                    	<page string="Permessi Fascicolo">
-                        	<group col="4">
-                        	<group col="2">
-                    			<field name="office_comp_ids" />
-                    			<field name="user_comp_ids" />
-                        	</group>
-                        	<group col="2">
-                    			<field name="office_view_ids" />
-                    			<field name="user_view_ids" />
-	                    	</group>
-                    	</group>
-                    	</page>
+	                    	<page string="Sottofascicoli">
+                                <field name="child_ids" attrs="{'invisible':[('dossier_type','=','inserto')]}" />
+                            </page>
+                            <page string="Documenti">
+                                <group col="4">
+                                    <field name="document_ids" domain="['|',('user_id','=',uid),('office_comp_ids.group_ids.users.id','in',[uid])]" nolabel="1" />
+                                </group>
+                            </page>
+                            <page string="Attori Coinvolti">
+                                <group col="4" attrs="{'invisible':[('dossier_typology','!=','procedimento')]}">
+                                    <field name="participant_partner_ids" />
+                                </group>
+                            </page>
+                            <page string="Permessi Fascicolo">
+                                <group col="4">
+                                    <group col="2">
+                                        <field name="office_comp_ids" />
+                                        <field name="user_comp_ids" />
+                                    </group>
+                                    <group col="2">
+                                        <field name="office_view_ids" />
+                                        <field name="user_view_ids" />
+                                    </group>
+                                </group>
+                            </page>
 	                    	<page string="Posizione Fisica Fascicolo" attrs="{'invisible':[('paperless','=',True)]}">
                         	<group col="4">
                     			<field name="address" />
@@ -168,9 +149,11 @@
                     			<field name="room" />
 	                    	</group>
                     	</page>
+                            <page string="Note" >
+                                <field name="notes" />
+                            </page>
 	                   </notebook>
-                    <label for="notes" />
-                    <field name="notes" />
+
                     </sheet>
                 </form>
             </field>
@@ -439,19 +422,12 @@
 		                </div>
 		           </header>
                     <sheet>
-                        <div class="oe_title">
-                            <label for="name" class="oe_edit_only"/>
-                            <h1>
-                                <field name="name" class="oe_inline" />
-                            </h1>
-                            <label for="document_type" class="oe_edit_only"/>
-                            <h2>
-                                <field name="document_type" class="oe_inline" />
-                            </h2>
-                            <label for="subject" class="oe_edit_only"/>
-                            <h2>
-                                <field name="subject" class="oe_inline" />
-                            </h2>
+                        <div class="gedoc_header">
+                            <group col="4">
+                                <field name="name" />
+                                <field name="document_type" />
+                                <field name="subject" />
+                            </group>
                         </div>
                         <group col="4" string="Informazioni Generali">
                     		<field name="user_id" />

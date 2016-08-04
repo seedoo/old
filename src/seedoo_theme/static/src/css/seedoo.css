@@ -13,6 +13,7 @@
 }
 
 .openerp button.oe_highlight {
+  color: #FFFFFF !important;
   background-color: #679B41;
   background-image: linear-gradient(to bottom, #679B41,#366732)!important;
 
