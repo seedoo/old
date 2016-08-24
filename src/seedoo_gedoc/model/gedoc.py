@@ -147,13 +147,9 @@ class protocollo_dossier(osv.Model):
             size=256,
             required=True,
             readonly=True,
-            states={'draft':
-                    [('readonly', False)]
-                    }
         ),
-        'description': fields.char(
+        'description': fields.text(
             'Oggetto',
-            size=512,
             required=True,
             readonly=True,
             states={'draft':

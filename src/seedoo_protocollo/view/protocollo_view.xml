@@ -407,17 +407,17 @@ this module contains the full copyright notices and license terms. -->
                 <form string="Protocollo" version="7.0">
                    <header>
                     	<div>
-		                   	<button name="register" states="draft" string="Registra Protocollo"/>
+		                   	<button name="register" states="draft" string="Registra Protocollo" class="oe_highlight_positive"/>
 		                    <button name="sent_pec" string="Invio Pec Protocollo" attrs="{'invisible':['|','|',('state','!=','registered'),('type','!=','out'),('pec','!=',True)]}"/>
 		                    <button name="sent" string="Invio Protocollo" attrs="{'invisible':['|','|',('state','!=','registered'),('type','!=','out'),('pec','!=',False)]}"/>
-		                    <button name="%(protocollo_cancel_action)d" type='action' states="registered,notified,sent,waiting,error" string="Annulla Protocollo"/>
+		                    <button name="%(protocollo_cancel_action)d" type='action' states="registered,notified,sent,waiting,error" string="Annulla Protocollo" class="oe_highlight_warning"/>
 		                    <button name="%(protocollo_modify_action)d" type='action' string='Modifica Protocollo' states='registered' groups="seedoo_protocollo.group_protocollo_manager"/>
 		                    <button name="%(protocollo_modify_pec_action)d" type='action' string='Modifica Mail e Reinvio' attrs="{'invisible':['|',('pec','=',False),('state','not in',('registered','waiting','error'))]}" groups="seedoo_protocollo.group_protocollo_manager"/>
 	                    </div>
                         <field name="state" widget="statusbar" statusbar_visible="draft,registered" statusbar_colors='{"draft":"blue","notified":"red"}'/>
                     </header>
                     <sheet>
-                        <div style="background-color: #f0f0f0;border: solid 1px #a0a0a0;">
+                        <div class="gedoc_header">
                         <group col="4" >
                             <field name="name" />
                             <field name="registration_date" />
@@ -483,18 +483,20 @@ this module contains the full copyright notices and license terms. -->
                             </page>
                             <page string="Classificazioni">
 	                    	  <group col="4">
-	                    	  	<group>
-		                    		<label for="classification" />
-			                    	<field name="classification" nolabel="1" widget="m2o_tree"
-			                    	options="{'limit': 10, 'create': false, 'create_edit': false}"/>
-		                    	</group>
-		                    	<group>
+                                  <group>
 		                    		<label for="dossier_ids" />
 			                    	<field name="dossier_ids" nolabel="1"
 			                    	options="{'limit': 10, 'create': false, 'create_edit': false}"
 			                    	domain="[('state','=','open')]"
 			                    	/>
 		                    	</group>
+                                  <newline/>
+	                    	  	<group>
+		                    		<label for="classification" />
+			                    	<field name="classification" nolabel="1" widget="m2o_tree"
+			                    	options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+		                    	</group>
+
 		                      </group>
 	                    	</page>
                             <page string="Assegnatari">

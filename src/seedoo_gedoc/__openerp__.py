@@ -37,6 +37,7 @@ Manages the documents of a Public Administration
         'demo/protocollo.classification.csv',
         'demo/data.xml',
         ],
+    'css': ['static/src/css/gedoc.css'],
     'installable': True,
     'application': True,
     'active': False,
