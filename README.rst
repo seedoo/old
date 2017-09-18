@@ -2,6 +2,6 @@
    :alt: Seedoo
    :target: http://www.seedoo.it
 
-***Versione non più supportata.***
+**Versione non più supportata.**
 
 La nuova versione è disponibile all'indirizzo https://github.com/seedoo/seedoo.
