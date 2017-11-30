@@ -4,4 +4,4 @@
 
 **Versione non più supportata.**
 
-La nuova versione è disponibile all'indirizzo https://github.com/seedoo/seedoo.
+La nuova versione è disponibile all'indirizzo https://github.com/seedoo/seedoo-core.
